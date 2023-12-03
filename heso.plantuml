@@ -1,0 +1,81 @@
+@startuml HESO_Class_Diagram
+
+abstract class User {
+  -user_id : Integer
+  -name : String
+  -email : String
+  -password : String
+  +login() : Void
+  +logout() : Void
+  +updateProfile() : Void
+}
+
+class SuperAdmin {
+}
+
+class Teacher {
+}
+
+class Student {
+}
+
+class EnglishClass {
+  -class_id : Integer
+  -title : String
+  -description : String
+  -teacher_id : Integer
+  -schedule_id : Integer
+  -student_list : List<Student>
+  -material_list : List<Material>
+  -lesson_list : List<Lesson>
+}
+
+class Schedule {
+  -schedule_id : Integer
+  -english_class_id : Integer
+  -lesson_ids : List<Integer>
+}
+
+class Lesson {
+  -lesson_id : Integer
+  -english_class_id : Integer
+  -date : Date
+  -time : Time
+  -google_meet_link : String
+  -attendance_record : List<Student>
+}
+
+class Material {
+  -material_id : Integer
+  -title : String
+  -type : String
+  -access_level : String
+}
+
+class GoogleCalendarEvent {
+  -event_id : Integer
+  -lesson_id : Integer
+  -start_time : DateTime
+  -end_time : DateTime
+  -google_meet_link : String
+}
+
+class AIChatbot {
+  -chatbot_id : Integer
+  -user_query_history : List<String>
+}
+
+User <|-- SuperAdmin
+User <|-- Teacher
+User <|-- Student
+SuperAdmin "1" - "0..*" Teacher : manages >
+SuperAdmin "1" - "0..*" Student : oversees >
+Teacher "1" -- "0..*" EnglishClass : teaches >
+Student "0..*" -- "0..*" EnglishClass : enrolled in >
+EnglishClass "1" -- "0..*" Schedule : has >
+Schedule "1" -- "0..*" Lesson : includes >
+Lesson "1" -- "0..*" Material : uses >
+Lesson "1" -- "1" GoogleCalendarEvent : scheduled as >
+AIChatbot "0..*" -- "0..*" User : assists >
+
+@enduml
