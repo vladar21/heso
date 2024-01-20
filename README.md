@@ -6,6 +6,7 @@ HESO is a streamlined online service designed for managing class schedules in sm
 ## Table of Contents
 - [Overview](#overview)
 - [User Roles and Responsibilities](#user-roles-and-responsibilities)
+- [User Stories](#user-stories)
 - [System Features](#system-features)
 - [Google Calendar API Integration](#google-calendar-api-integration)
 - [Technologies Used](#technologies-used)
