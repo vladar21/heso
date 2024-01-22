@@ -65,6 +65,75 @@ In the development of HESO, user stories are used to capture specific functional
     2. Users receive notifications for upcoming classes through Google Calendar.
     3. Users can view class details within their Google Calendar interface.
 
+## Model Relationships
+
+### User Model (Abstract Base Class)
+```plaintext
+- id (PrimaryKey): Unique identifier for the user.
+- username (CharField): Chosen username for login purposes.
+- email (EmailField): Email address for communication and system notifications.
+- first_name (CharField): User's given name for identification within the system.
+- last_name (CharField): User's family name for record-keeping.
+- password (CharField): Hashed password for secure authentication.
+- is_teacher (BooleanField): Flag to indicate if the user has teacher privileges.
+- is_student (BooleanField): Flag to indicate if the user has student privileges.
+```
+
+### Teacher Model (Inherits from User)
+```plaintext
+- department (CharField): The department to which the teacher belongs.
+- bio (TextField, optional): A brief description of the teacher's background and teaching philosophy.
+```
+
+### Student Model (Inherits from User)
+```plaintext
+- enrollment_date (DateTimeField): The date on which the student was enrolled in the school.
+- major (CharField, optional): The main subject or discipline the student is studying.
+```
+
+### EnglishClass Model
+```plaintext
+- id (PrimaryKey): Unique identifier for the class.
+- title (CharField): The formal name of the class or course.
+- description (TextField): Detailed curriculum and information about the class.
+- teacher (ForeignKey to Teacher): The teacher who conducts the class.
+- schedule (ForeignKey to Schedule): The schedule associated with the class.
+- students (ManyToManyField to Student): The list of students enrolled in the class.
+```
+
+### Schedule Model
+```plaintext
+- id (PrimaryKey): Unique identifier for the schedule.
+- class_id (ForeignKey to EnglishClass): The class to which this schedule belongs.
+- term (CharField): The academic term or semester during which the class is held.
+- start_date (DateField): The starting date of the class's schedule.
+- end_date (DateField): The ending date of the class's schedule.
+```
+
+### Lesson Model
+```plaintext
+- id (PrimaryKey): Unique identifier for the lesson.
+- schedule (ForeignKey to Schedule): The schedule to which this lesson belongs.
+- title (CharField): The title or topic of the individual lesson.
+- description (TextField, optional): Additional details about the lesson's content.
+- start_time (DateTimeField): The scheduled start time of the lesson.
+- end_time (DateTimeField): The scheduled end time of the lesson.
+- google_meet_link (URLField, optional): The URL for the Google Meet session, if applicable.
+```
+
+### Material Model
+```plaintext
+- id (PrimaryKey): Unique identifier for the material.
+- title (CharField): The title or name of the material.
+- type (CharField): The type of material, such as Video, Document, etc.
+- content (TextField/FileField): The actual educational content, which may be a file upload or plain text.
+- english_classes (ManyToManyField to EnglishClass): A collection of classes that this material is associated with.
+- lessons (ManyToManyField to Lesson): A collection of lessons that use this material.
+- students (ManyToManyField to Student): A collection of students who have access to this material.
+- created_at (DateTimeField): The date and time when the material was created.
+- updated_at (DateTimeField): The date and time when the material was last updated.
+```
+
 ## System Features
 - **Class Schedule Management**: Teachers and students can view and interact with class schedules.
 - **Admin Control**: System administrators can manage user accounts and configure system settings.
