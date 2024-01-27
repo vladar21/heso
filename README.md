@@ -40,9 +40,13 @@ In the development of HESO, user stories are used to capture specific functional
 ### User Story for Admin
 - **Story**: As an **Admin**, I can **manage user accounts and system settings** so that **the system remains secure and functions as intended**.
   - **Acceptance Criteria**:
-    1. Admin can create, edit, and delete user accounts.
-    2. Admin can access and modify system settings.
-    3. System security measures are in place to prevent unauthorized access.
+    1. Admin can create, edit, and delete user accounts for teachers and students.
+    2. Admin can access and modify system settings including platform features and access controls.
+    3. Admin can oversee and manage class schedules and lesson plans to ensure accuracy and coherence.
+    4. Admin can review and approve educational materials uploaded by teachers to maintain quality standards.
+    5. System security measures are in place to prevent unauthorized access and data breaches.
+    6. Admin can generate reports on user activity, class schedules, and system usage for analysis and improvement.
+    7. Admin can provide support and guidance to users, addressing any system-related queries or issues.
 
 ### User Story for Teacher
 - **Story**: As a **Teacher**, I can **access and update the class schedule** so that **I can efficiently manage class timings and inform students of any changes**.
@@ -77,6 +81,12 @@ In the development of HESO, user stories are used to capture specific functional
 - password (CharField): Hashed password for secure authentication.
 - is_teacher (BooleanField): Flag to indicate if the user has teacher privileges.
 - is_student (BooleanField): Flag to indicate if the user has student privileges.
+```
+
+### Admin Model (Inherits from User)
+```plaintext
+- Inherits all fields from User.
+- Additional Privileges: Full access to the platform for managing settings, users, and system-wide configurations.
 ```
 
 ### Teacher Model (Inherits from User)
@@ -134,6 +144,14 @@ In the development of HESO, user stories are used to capture specific functional
 - updated_at (DateTimeField): The date and time when the material was last updated.
 ```
 
+### GoogleCalendarEvent Model
+```plaintext
+- id (PrimaryKey): Unique identifier for the calendar event.
+- lesson_id (ForeignKey to Lesson): The lesson associated with the calendar event.
+- event_time (DateTimeField): The scheduled time of the event.
+- google_event_id (CharField): The unique identifier for the event in Google Calendar.
+```
+
 ## System Features
 - **Class Schedule Management**: Teachers and students can view and interact with class schedules.
 - **Admin Control**: System administrators can manage user accounts and configure system settings.
@@ -147,6 +165,57 @@ In the development of HESO, user stories are used to capture specific functional
 - **Frontend**: Bootstrap 4.6.1, jQuery 3.5.1
 - **Database**: SQLite (development), PostgreSQL (production)
 - **Version Control**: Git, GitHub
+
+## Agile Development Plan
+
+The development of HESO is structured into sprints, with each sprint targeting specific tasks for a focused and incremental development approach. Below is the sprint schedule along with their respective tasks:
+
+### Sprint Schedule
+
+#### Sprint 1 (28/01/2024 - 31/01/2024): Project Setup and Basic Backend
+- Task 1: Set up the Django project and configure the development environment.
+- Task 2: Establish database models for User, Teacher, Student, and Admin.
+- Task 3: Implement a basic user authentication system.
+
+#### Sprint 2 (01/02/2024 - 04/02/2024): Basic Frontend and User Management
+- Task 1: Set up the basic structure of the frontend using Bootstrap and jQuery.
+- Task 2: Implement frontend interfaces for user registration and login.
+- Task 3: Develop Admin functionalities for managing user accounts.
+
+#### Sprint 3 (05/02/2024 - 08/02/2024): Advanced Backend for Class and Schedule Management
+- Task 1: Develop models and backend functionalities for EnglishClass and Schedule.
+- Task 2: Implement Admin tools for class schedules and lesson plan management.
+
+#### Sprint 4 (09/02/2024 - 12/02/2024): Frontend for Class and Schedule Management
+- Task 1: Create frontend interfaces for class schedule viewing and editing.
+- Task 2: Enable Teachers to modify class schedules through the frontend.
+
+#### Sprint 5 (13/02/2024 - 16/02/2024): Lesson and Material Management
+- Task 1: Develop models and backend functionalities for Lesson and Material.
+- Task 2: Build Admin review and approval system for educational materials.
+
+#### Sprint 6 (17/02/2024 - 20/02/2024): Google Calendar API Integration
+- Task 1: Integrate backend with Google Calendar API for class schedule synchronization.
+- Task 2: Set up syncing of class schedules with Google Calendar.
+
+#### Sprint 7 (21/02/2024 - 24/02/2024): Frontend Integration and Notification System
+- Task 1: Develop frontend integration for Google Calendar features.
+- Task 2: Implement a notification system for schedule changes and upcoming classes.
+
+#### Sprint 8 (25/02/2024 - 28/02/2024): Testing and Refinement
+- Task 1: Conduct thorough unit and integration tests.
+- Task 2: Refine user interfaces and functionalities based on feedback.
+
+#### Sprint 9 (29/02/2024 - 03/03/2024): Documentation and Final Testing
+- Task 1: Document the API and user interfaces.
+- Task 2: Conduct user acceptance testing and finalize bug fixes.
+
+#### Sprint 10 (04/03/2024 - 07/03/2024): Deployment and Launch
+- Task 1: Set up the PostgreSQL production database.
+- Task 2: Configure continuous integration and deployment pipelines.
+- Task 3: Deploy the project on a hosting platform like Heroku.
+
+Each sprint in this schedule is a focused development cycle that addresses specific components of the project, facilitating clear progression towards the project goals.
 
 ## Setup and Installation
 - Detailed instructions for setting up the development environment and deploying the application.
