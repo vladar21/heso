@@ -76,6 +76,7 @@ In the development of HESO, user stories are used to capture specific functional
 - id (PrimaryKey): Unique identifier for the user.
 - username (CharField): Chosen username for login purposes.
 - email (EmailField): Email address for communication and system notifications.
+- phone_number (CharField): Phone number for communication.
 - first_name (CharField): User's given name for identification within the system.
 - last_name (CharField): User's family name for record-keeping.
 - password (CharField): Hashed password for secure authentication.
