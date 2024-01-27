@@ -1,5 +1,5 @@
 venv/
-__pycache__
+__pycache__/
 heso.plantuml
 *.sqlite3
 heso/heso/__pycache__/settings.cpython-312.pyc
