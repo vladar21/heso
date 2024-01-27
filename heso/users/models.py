@@ -11,6 +11,9 @@ class User(AbstractUser):
     is_teacher = models.BooleanField(default=False)
     is_student = models.BooleanField(default=False)
 
+    class Meta:
+        verbose_name = "General User"
+
     def __str__(self):
         return self.username
 
@@ -19,7 +22,13 @@ class Teacher(User):
     department = models.CharField(max_length=100)
     bio = models.TextField(blank=True, null=True)
 
+    class Meta:
+        verbose_name = "Teacher"
+
 
 class Student(User):
     enrollment_date = models.DateField()
     major = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Student"
