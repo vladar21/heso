@@ -7,9 +7,11 @@ HESO is a streamlined online service designed for managing class schedules in sm
 - [Overview](#overview)
 - [User Roles and Responsibilities](#user-roles-and-responsibilities)
 - [User Stories](#user-stories)
+- [Model Relationships](#model-relationships)
 - [System Features](#system-features)
 - [Google Calendar API Integration](#google-calendar-api-integration)
 - [Technologies Used](#technologies-used)
+- [Agile Development Plan](#agile-development-plan)
 - [Setup and Installation](#setup-and-installation)
 - [Usage](#usage)
 - [Testing](#testing)
@@ -21,6 +23,7 @@ HESO is a streamlined online service designed for managing class schedules in sm
 HESO is tailored to facilitate the organization and management of class schedules, enhancing the efficiency of educational processes in online English language schools.
 
 ## User Roles and Responsibilities
+
 ### Admin
 - Manages user accounts and overall system settings.
 - Oversees scheduling operations and system maintenance.
