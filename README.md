@@ -182,42 +182,42 @@ The development of HESO is structured into sprints, with each sprint targeting s
 - Task 3: Implement a basic user authentication system.
 
 #### Sprint 2 (01/02/2024 - 04/02/2024): Basic Frontend and User Management
-- Task 1: Set up the basic structure of the frontend using Bootstrap and jQuery.
-- Task 2: Implement frontend interfaces for user registration and login.
-- Task 3: Develop Admin functionalities for managing user accounts.
+- Task 4: Set up the basic structure of the frontend using Bootstrap and jQuery.
+- Task 5: Implement frontend interfaces for user registration and login.
+- Task 6: Develop Admin functionalities for managing user accounts.
 
 #### Sprint 3 (05/02/2024 - 08/02/2024): Advanced Backend for Class and Schedule Management
-- Task 1: Develop models and backend functionalities for EnglishClass and Schedule.
-- Task 2: Implement Admin tools for class schedules and lesson plan management.
+- Task 7: Develop models and backend functionalities for EnglishClass and Schedule.
+- Task 8: Implement Admin tools for class schedules and lesson plan management.
 
 #### Sprint 4 (09/02/2024 - 12/02/2024): Frontend for Class and Schedule Management
-- Task 1: Create frontend interfaces for class schedule viewing and editing.
-- Task 2: Enable Teachers to modify class schedules through the frontend.
+- Task 9: Create frontend interfaces for class schedule viewing and editing.
+- Task 10: Enable Teachers to modify class schedules through the frontend.
 
 #### Sprint 5 (13/02/2024 - 16/02/2024): Lesson and Material Management
-- Task 1: Develop models and backend functionalities for Lesson and Material.
-- Task 2: Build Admin review and approval system for educational materials.
+- Task 11: Develop models and backend functionalities for Lesson and Material.
+- Task 12: Build Admin review and approval system for educational materials.
 
 #### Sprint 6 (17/02/2024 - 20/02/2024): Google Calendar API Integration
-- Task 1: Integrate backend with Google Calendar API for class schedule synchronization.
-- Task 2: Set up syncing of class schedules with Google Calendar.
+- Task 13: Integrate backend with Google Calendar API for class schedule synchronization.
+- Task 14: Set up syncing of class schedules with Google Calendar.
 
 #### Sprint 7 (21/02/2024 - 24/02/2024): Frontend Integration and Notification System
-- Task 1: Develop frontend integration for Google Calendar features.
-- Task 2: Implement a notification system for schedule changes and upcoming classes.
+- Task 15: Develop frontend integration for Google Calendar features.
+- Task 16: Implement a notification system for schedule changes and upcoming classes.
 
 #### Sprint 8 (25/02/2024 - 28/02/2024): Testing and Refinement
-- Task 1: Conduct thorough unit and integration tests.
-- Task 2: Refine user interfaces and functionalities based on feedback.
+- Task 17: Conduct thorough unit and integration tests.
+- Task 18: Refine user interfaces and functionalities based on feedback.
 
 #### Sprint 9 (29/02/2024 - 03/03/2024): Documentation and Final Testing
-- Task 1: Document the API and user interfaces.
-- Task 2: Conduct user acceptance testing and finalize bug fixes.
+- Task 19: Document the API and user interfaces.
+- Task 20: Conduct user acceptance testing and finalize bug fixes.
 
 #### Sprint 10 (04/03/2024 - 07/03/2024): Deployment and Launch
-- Task 1: Set up the PostgreSQL production database.
-- Task 2: Configure continuous integration and deployment pipelines.
-- Task 3: Deploy the project on a hosting platform like Heroku.
+- Task 21: Set up the PostgreSQL production database.
+- Task 22: Configure continuous integration and deployment pipelines.
+- Task 23: Deploy the project on a hosting platform like Heroku.
 
 Each sprint in this schedule is a focused development cycle that addresses specific components of the project, facilitating clear progression towards the project goals.
 
