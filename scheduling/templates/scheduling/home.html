@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+  <h1>Welcome to the Scheduling App</h1>
+  <ul>
+    {% for class in classes %}
+      <li>{{ class.title }} - {{ class.description }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
