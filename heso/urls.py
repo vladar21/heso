@@ -16,7 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from scheduling.views import my_schedule
+
 
 urlpatterns = [
+    path('schedule/', my_schedule, name='schedule'),
     path('admin/', admin.site.urls),
 ]
