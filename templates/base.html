@@ -24,24 +24,21 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Home</a>
-                    </li>
-                    <!-- Дополнительные ссылки для навигации -->
+                    
                 </ul>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                    <li class="nav-item">
+                    <li class="nav-item {% if current_path == '/schedule/' %}active{% endif %}">
                         <a class="nav-link" href="{% url 'schedule' %}">Schedule</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item {% if current_path == '/users/logout/' %}active{% endif %}">
                         <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                    </li>
+                    </li>                    
                     {% else %}
-                    <li class="nav-item">
+                    <li class="nav-item {% if current_path == '/users/login/' %}active{% endif %}">
                         <a class="nav-link" href="{% url 'login' %}">Login</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item {% if current_path == '/users/register/' %}active{% endif %}">
                         <a class="nav-link" href="{% url 'register' %}">Register</a>
                     </li>
                     {% endif %}
@@ -55,10 +52,10 @@
         <!-- The overridden content will go here -->
         {% endblock content %}
     </main>
-
+    <br>
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container">
-            <span class="text-muted">Place sticky footer content here.</span>
+            <span class="text-muted">&copy; 2024 Vladyslav Rastvorov. All rights reserved.</span>
         </div>
     </footer>
 
