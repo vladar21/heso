@@ -88,8 +88,15 @@ class Lesson(models.Model):
         null=True,
         verbose_name="Google Meet Link"
     )
+    LOCATION_CHOICES = [
+        ('on-site', 'On-site'),
+        ('on-line', 'On-line'),
+    ]
     location = models.CharField(
-        max_length=255, blank=True, null=True, verbose_name="Location")
+        max_length=10,
+        choices=LOCATION_CHOICES, default='on-site', verbose_name="location")
+    # location = models.CharField(
+    #     max_length=255, blank=True, null=True, verbose_name="Location")
     online_meeting_link = models.URLField(
         blank=True, null=True, verbose_name="Online Meeting Link")
     STATUS_CHOICES = [
