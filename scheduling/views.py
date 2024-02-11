@@ -3,6 +3,6 @@ from django.shortcuts import render
 from .models import EnglishClass
 
 
-def home(request):
+def schedule(request):
     classes = EnglishClass.objects.all()  # Getting all english classes
-    return render(request, 'scheduling/home.html', {'classes': classes})
+    return render(request, 'scheduling/schedule.html', {'classes': classes})
