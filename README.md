@@ -166,7 +166,7 @@ In the development of HESO, user stories are used to capture specific functional
 
 ## Technologies Used
 - **Backend**: Django 4.2.9
-- **Frontend**: Bootstrap 4.6.2, jQuery 3.5.1
+- **Frontend**: Bootstrap 4.6.2, jQuery 3.5.1, FullCalendar 6.1.10
 - **Database**: SQLite (development), PostgreSQL (production)
 - **Version Control**: Git, GitHub
 
