@@ -1,12 +1,81 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Home{% endblock %}
+{% block extra_head %}
+<!-- FullCalendar -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    initialDate: '2023-11-07',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
+    events: [
+      {
+        title: 'All Day Event',
+        start: '2023-11-01'
+      },
+      {
+        title: 'Long Event',
+        start: '2023-11-07',
+        end: '2023-11-10'
+      },
+      {
+        groupId: '999',
+        title: 'Repeating Event',
+        start: '2023-11-09T16:00:00'
+      },
+      {
+        groupId: '999',
+        title: 'Repeating Event',
+        start: '2023-11-16T16:00:00'
+      },
+      {
+        title: 'Conference',
+        start: '2023-11-11',
+        end: '2023-11-13'
+      },
+      {
+        title: 'Meeting',
+        start: '2023-11-12T10:30:00',
+        end: '2023-11-12T12:30:00'
+      },
+      {
+        title: 'Lunch',
+        start: '2023-11-12T12:00:00'
+      },
+      {
+        title: 'Meeting',
+        start: '2023-11-12T14:30:00'
+      },
+      {
+        title: 'Birthday Party',
+        start: '2023-11-13T07:00:00'
+      },
+      {
+        title: 'Click for Google',
+        url: 'https://google.com/',
+        start: '2023-11-28'
+      }
+    ]
+  });
+
+  calendar.render();
+      });
+
+    </script>
+{% endblock extra_head %}
+
 
 {% block content %}
-  <h1>Welcome to the Scheduling App</h1>
-  <ul>
-    {% for class in classes %}
-      <li>{{ class.title }} - {{ class.description }}</li>
-    {% endfor %}
-  </ul>
-{% endblock %}
+<div id='calendar'></div>
+{% endblock content %}
+
+{% block extra_js %}
+{% endblock extra_js %}
