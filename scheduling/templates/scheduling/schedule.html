@@ -5,29 +5,28 @@
 <!-- FullCalendar -->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-      var calendarEl = document.getElementById('calendar');
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          headerToolbar: {
-              left: 'prev,next today',
-              center: 'title',
-              right: 'dayGridMonth,timeGridWeek,timeGridDay'
-          },
-          events: {{ lessons_list | safe }},
-          eventColor: '#378006', // Пример изменения цвета событий
-          eventClick: function(info) {
-              // Обработчик клика по событию (можно открыть модальное окно с деталями)
-              alert('Event: ' + info.event.title);
-          },
-          eventContent: function(arg) {
-              // Настройка отображения события
-              return { html: `<b>${arg.timeText}</b><br><i>${arg.event.title}</i>` };
-          }
-      });
-      calendar.render();
-  });
-  </script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: JSON.parse('{{ lessons_list|safe }}'),
+        eventContent: function(arg) {
+            // Доступ к extendedProps
+            var teacher = arg.event.extendedProps.teacher;
+            var students = arg.event.extendedProps.students.join(', ');
+            return { html: `<div style='background-color: ${arg.event.backgroundColor};'><b>${arg.event.title}</b><br><i>Teacher: ${teacher}</i><br><i>Students: ${students}</i></div>` };
+        }
+    });
+    calendar.render();
+});
+
+</script>
 {% endblock extra_head %}
 
 
