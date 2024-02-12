@@ -1,12 +1,21 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+import hashlib
+
+
+def generate_color_from_name(name):
+    # Генерация хеша из названия и выбор цвета на его основе
+    hash_object = hashlib.md5(name.encode())
+    hex_color = '#' + hash_object.hexdigest()[:6]
+    return hex_color
 
 
 # Модель EnglishClass представляет учебный класс или курс
 class EnglishClass(models.Model):
     title = models.CharField(max_length=255, verbose_name="Title")
     description = models.TextField(verbose_name="Description")
+    color = models.CharField(max_length=7, default='#FFFFFF')
     teacher = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -25,6 +34,11 @@ class EnglishClass(models.Model):
         verbose_name = "English Class"
         verbose_name_plural = "English Classes"
 
+    def save(self, *args, **kwargs):
+        if not self.color or self.color == '#FFFFFF':  # Если цвет не задан
+            self.color = generate_color_from_name(self.title)
+        super(EnglishClass, self).save(*args, **kwargs)
+        
     def number_of_students(self):
         """Returns the number of students enrolled in the class."""
         return self.students.count()

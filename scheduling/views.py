@@ -11,7 +11,12 @@ def schedule(request):
             'title': lesson.title,
             'start': lesson.start_time.strftime("%Y-%m-%dT%H:%M:%S"),
             'end': lesson.end_time.strftime("%Y-%m-%dT%H:%M:%S"),
+            'color': lesson.english_class.color,
             'url': f"/lessons/{lesson.id}/",
         } for lesson in lessons
     ]
-    return render(request, 'scheduling/schedule.html', {'lessons_list': lessons_list})
+    return render(
+        request,
+        'scheduling/schedule.html',
+        {'lessons_list': lessons_list}
+    )
