@@ -1,80 +1,87 @@
 from django.contrib.auth import get_user_model
 from users.models import Teacher, Student
 from scheduling.models import EnglishClass, Lesson, Schedule, Material
-from django.utils import timezone
+from django.utils.timezone import make_aware
 import random
 import datetime
 
+# Setup User model
 User = get_user_model()
 
 
+# Generate dates for the schedules
 def generate_schedule_dates(year=2024, month=3):
     start_date = datetime.date(year, month, random.randint(1, 7))
     end_date = datetime.date(year, month, random.randint(24, 31))
     return start_date, end_date
 
 
+# Generate a random Google Meet link
 def generate_google_meet_link():
-    return "https://meet.google.com/" + "".join(random.choices("abcdefghijklmnopqrstuvwxyz123456789", k=10))
+    return "https://meet.google.com/" + "".join(random.choices("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", k=10))
 
 
-def create_lessons(schedule, start_hour=15, end_hour=21, lesson_duration=2):
+def create_materials_for_lesson(lesson):
+    material_types = ['book', 'video', 'article']
+    for _ in range(random.randint(1, 3)):  # Each lesson can have between 1 to 3 materials
+        material = Material.objects.create(
+            title=f"Material for {lesson.title}",
+            type=random.choice(material_types),
+            # content=None,  Assuming content is uploaded separately or not applicable
+        )
+        # Assuming Material model has a many-to-many field with EnglishClass named 'english_classes'
+        material.english_class.add(lesson.english_class)
+        # If the lessons field is a ManyToMany field in Material model to associate with Lesson
+        material.lessons.add(lesson)
+
+
+# Function to create lessons for a given class and schedule
+def create_lessons_for_class(english_class, schedule, lesson_titles):
     current_date = schedule.start_date
     while current_date <= schedule.end_date:
-        if current_date.weekday() != 6:  # Skip Sundays
-            start_hour = 15 if current_date.weekday() < 5 else 9  # Weekdays at 15:00, Saturday at 9:00
-            start_time = datetime.datetime.combine(current_date, datetime.time(start_hour, 0, tzinfo=timezone.utc))
-            end_time = start_time + datetime.timedelta(hours=lesson_duration)
-            
-            # Define location here before using it
-            location = random.choice(['on-site', 'online'])
-            
-            Lesson.objects.create(
-                english_class=schedule.english_class,
-                title=f"Lesson on {current_date}",
-                description="A detailed description of the lesson.",
+        if current_date.weekday() < 6:  # Exclude Sundays
+            start_time = make_aware(datetime.datetime.combine(current_date, datetime.time(random.choice(range(9, 17)), 0)))
+            end_time = start_time + datetime.timedelta(hours=2)  # Assuming each lesson lasts 2 hours
+            lesson_title = random.choice(lesson_titles)
+            lesson = Lesson.objects.create(
+                english_class=english_class,
+                title=lesson_title,
+                description=f"Description for {lesson_title}",
                 start_time=start_time,
                 end_time=end_time,
-                status='planned',
                 google_meet_link=generate_google_meet_link(),
-                location=location,
-                online_meeting_link=generate_google_meet_link() if location == 'online' else ""
+                location=random.choice(['on-site', 'online']),
+                status='planned'
             )
-        current_date += datetime.timedelta(days=1 if current_date.weekday() == 5 else 3)  # Next lesson in 3 days, except after Saturday
+            create_materials_for_lesson(lesson)
+            current_date += datetime.timedelta(days=2)  # Schedule next lesson 2 days apart
+        else:
+            current_date += datetime.timedelta(days=1)  # Skip to next day if Sunday
 
 
-# Create teachers
-teacher1 = Teacher.objects.create_user(username='teacher1', email='teacher1@example.com', password='pass123', is_teacher=True)
-teacher2 = Teacher.objects.create_user(username='teacher2', email='teacher2@example.com', password='pass123', is_teacher=True)
+# Create users, teachers, and students
+def create_users():
+    teacher1 = Teacher.objects.create_user(username='teacher1', email='teacher1@example.com', password='password123', is_teacher=True)
+    teacher2 = Teacher.objects.create_user(username='teacher2', email='teacher2@example.com', password='password123', is_teacher=True)
+    students = [Student.objects.create_user(username=f'student{i}', email=f'student{i}@example.com', password='password123', is_student=True, enrollment_date=datetime.date.today()) for i in range(1, 16)]
+    return teacher1, teacher2, students
 
-# Create students
-students = [Student.objects.create_user(username=f'student{i}', email=f'student{i}@example.com', password='pass123', is_student=True, enrollment_date=datetime.date(2024, 1, 1)) for i in range(1, 13)]
 
-# Create classes and assign students
-english_class_101 = EnglishClass.objects.create(title="English 101", description="Basic English skills", teacher=teacher1)
-english_class_101.students.set(students[:3])
-english_class_102 = EnglishClass.objects.create(title="English 102", description="Intermediate English skills", teacher=teacher1)
-english_class_102.students.set(students[3:8])
-advanced_english = EnglishClass.objects.create(title="Advanced English", description="Advanced English communication skills", teacher=teacher2)
-advanced_english.students.set(students[8:])
+teacher1, teacher2, students = create_users()
 
-# Create schedules
-schedule_dates_101, schedule_dates_102 = generate_schedule_dates(), generate_schedule_dates()
-schedule_101 = Schedule.objects.create(english_class=english_class_101, term="Spring 2024", start_date=schedule_dates_101[0], end_date=schedule_dates_101[1])
-schedule_102 = Schedule.objects.create(english_class=english_class_102, term="Spring 2024", start_date=schedule_dates_102[0], end_date=schedule_dates_102[1])
-# Assuming advanced English class has a different schedule
-schedule_advanced_dates = generate_schedule_dates()
-schedule_advanced = Schedule.objects.create(english_class=advanced_english, term="Spring 2024", start_date=schedule_advanced_dates[0], end_date=schedule_advanced_dates[1])
+# Define classes
+classes_info = [
+    ("English 101", teacher1, ["Alphabet and Phonics", "Basic Grammar", "Simple Conversations"]),
+    ("English 102", teacher2, ["Intermediate Grammar", "Writing Skills", "Speaking and Listening"]),
+    ("Advanced English", teacher1, ["Advanced Grammar", "Business English", "Literature"])
+]
 
-# Create lessons for each schedule
-create_lessons(schedule_101)
-create_lessons(schedule_102)
-create_lessons(schedule_advanced, start_hour=9)  # Advanced English starts earlier
+for class_title, teacher, lesson_titles in classes_info:
+    english_class = EnglishClass.objects.create(title=class_title, description=f"{class_title} Description", teacher=teacher)
+    # Randomly assign students to this class
+    english_class.students.set(random.sample(list(students), k=random.randint(5, len(students) // 3)))
+    start_date, end_date = generate_schedule_dates()
+    schedule = Schedule.objects.create(english_class=english_class, term="Spring 2024", start_date=start_date, end_date=end_date)
+    create_lessons_for_class(english_class, schedule, lesson_titles)
 
-# Create materials
-materials_titles = ["Basic Grammar Book", "Intermediate Grammar Exercises", "Advanced English Communication Skills"]
-for title in materials_titles:
-    material = Material.objects.create(title=title, type="book")
-    material.english_class.add(english_class_101, english_class_102, advanced_english)
-
-print("Data has been populated successfully.")
+print("Data population is complete.")
