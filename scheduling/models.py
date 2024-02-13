@@ -1,14 +1,28 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
-import hashlib
+import random
 
 
-def generate_color_from_name(name):
-    # Генерация хеша из названия и выбор цвета на его основе
-    hash_object = hashlib.md5(name.encode())
-    hex_color = '#' + hash_object.hexdigest()[:6]
-    return hex_color
+# Example set of 30 dark colors
+DARK_COLORS = [
+    '#00416A', '#1A1A1D', '#0A0F0D', '#4B0082', '#002635', 
+    '#2C3531', '#123456', '#2A2B2D', '#343837', '#3B3C36',
+    '#413839', '#3D3E40', '#464646', '#484848', '#494949',
+    '#4C4F50', '#4F4A4A', '#515151', '#525252', '#555555',
+    '#565051', '#5B5A5A', '#5C5B5B', '#5D5D5D', '#616569',
+    '#626D6D', '#646464', '#666362', '#696969', '#6E6A6B'
+]
+
+
+def generate_unique_dark_color(excluded_colors):
+    """
+    Generates a unique dark color that's not in the excluded_colors list.
+    """
+    available_colors = [color for color in DARK_COLORS if color not in excluded_colors]
+    if not available_colors:  # If all colors are used, fallback to a random choice or handle differently
+        return random.choice(DARK_COLORS)
+    return random.choice(available_colors)
 
 
 # Модель EnglishClass представляет учебный класс или курс
@@ -35,10 +49,12 @@ class EnglishClass(models.Model):
         verbose_name_plural = "English Classes"
 
     def save(self, *args, **kwargs):
-        if not self.color or self.color == '#FFFFFF':  # Если цвет не задан
-            self.color = generate_color_from_name(self.title)
+        if not self.color or self.color == '#FFFFFF':  # If color not set
+            # Fetch already used colors
+            used_colors = list(EnglishClass.objects.values_list('color', flat=True))
+            self.color = generate_unique_dark_color(used_colors)
         super(EnglishClass, self).save(*args, **kwargs)
-        
+
     def number_of_students(self):
         """Returns the number of students enrolled in the class."""
         return self.students.count()

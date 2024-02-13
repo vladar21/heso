@@ -13,15 +13,14 @@ def schedule(request):
 
         lessons_data.append({
             'id': lesson.id,
-            'title': f"{lesson.title} ({lesson_number}/{total_lessons})",
+            'title': f"{lesson.english_class.title} ({lesson_number}/{total_lessons}) | {lesson.english_class.teacher.username}",
             'start': lesson.start_time.isoformat(),
             'end': lesson.end_time.isoformat(),
-            'color': lesson.english_class.color,
             'backgroundColor': lesson.english_class.color,
             'extendedProps': {
-                'teacher': lesson.english_class.teacher.username,
-                'students': list(lesson.english_class.students.values_list('username', flat=True)),
-                'classTitle': lesson.english_class.title
+                'class_topic': lesson.title,
+                'meeting_link': lesson.online_meeting_link,
+                'location': lesson.location,
             }
         })
 

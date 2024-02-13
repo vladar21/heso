@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
 <!-- FullCalendar -->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 <script>
@@ -17,11 +19,27 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         events: JSON.parse('{{ lessons_list|safe }}'),
         eventContent: function(arg) {
-            // Доступ к extendedProps
-            var teacher = arg.event.extendedProps.teacher;
-            var students = arg.event.extendedProps.students.join(', ');
-            return { html: `<div style='background-color: ${arg.event.backgroundColor};'><b>${arg.event.title}</b><br><i>Teacher: ${teacher}</i><br><i>Students: ${students}</i></div>` };
-        }
+    var class_topic = arg.event.extendedProps.class_topic;
+       
+    var location = arg.event.extendedProps.location;
+    if (location == 'online'){
+        var meeting_link = `<div><i class="fas fa-video"></i> Meeting link: <b><a href="${arg.event.extendedProps.meeting_link}" target="_blank" style="color: lightblue;">Join</a></b></div>`
+    }else{
+        var meeting_link = `<div><i class="fas fa-video"></i> Location: <b>Onsite<b></div>`
+    }
+       
+
+    // Example HTML structure with FontAwesome icons
+    return {
+        html: `
+            <div style="padding: 4px; background-color: ${arg.event.backgroundColor}; color: #20165b; border-radius: 4px;">
+                <b>${arg.event.title}</b><br>
+                <div><i class="fas fa-book"></i> Topic: ${class_topic}</div>
+                ${meeting_link}
+            </div>
+        `
+    };
+}
     });
     calendar.render();
 });

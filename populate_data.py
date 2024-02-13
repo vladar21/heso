@@ -8,11 +8,19 @@ import datetime
 # Setup User model
 User = get_user_model()
 
+# Initialize a variable to keep track of the last schedule start date
+last_start_date = None
 
-# Generate dates for the schedules
-def generate_schedule_dates(year=2024, month=3):
-    start_date = datetime.date(year, month, random.randint(1, 7))
-    end_date = datetime.date(year, month, random.randint(24, 31))
+
+# Generate dates for the schedules with staggered start dates
+def generate_schedule_dates(year=2024, month=3, last_date=None):
+    global last_start_date
+    if last_date:
+        start_date = last_date + datetime.timedelta(days=random.randint(1, 3))  # Stagger start dates
+    else:
+        start_date = datetime.date(year, month, random.randint(1, 3))
+    end_date = start_date + datetime.timedelta(days=random.randint(28, 30))  # Ensure the schedule lasts a certain period
+    last_start_date = start_date  # Update the last start date
     return start_date, end_date
 
 
@@ -54,7 +62,7 @@ def create_lessons_for_class(english_class, schedule, lesson_titles):
                 status='planned'
             )
             create_materials_for_lesson(lesson)
-            current_date += datetime.timedelta(days=2)  # Schedule next lesson 2 days apart
+            current_date += datetime.timedelta(random.choice(range(2, 4)))  # Schedule next lesson 2-3 days apart
         else:
             current_date += datetime.timedelta(days=1)  # Skip to next day if Sunday
 
@@ -76,11 +84,12 @@ classes_info = [
     ("Advanced English", teacher1, ["Advanced Grammar", "Business English", "Literature"])
 ]
 
+# When creating schedules for each class, use the updated function with the last_date parameter
 for class_title, teacher, lesson_titles in classes_info:
     english_class = EnglishClass.objects.create(title=class_title, description=f"{class_title} Description", teacher=teacher)
     # Randomly assign students to this class
     english_class.students.set(random.sample(list(students), k=random.randint(5, len(students) // 3)))
-    start_date, end_date = generate_schedule_dates()
+    start_date, end_date = generate_schedule_dates(last_date=last_start_date)  # Use the last_start_date to generate new dates
     schedule = Schedule.objects.create(english_class=english_class, term="Spring 2024", start_date=start_date, end_date=end_date)
     create_lessons_for_class(english_class, schedule, lesson_titles)
 
