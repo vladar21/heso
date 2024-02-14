@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
+        editable: true,
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
@@ -19,27 +20,71 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         events: JSON.parse('{{ lessons_list|safe }}'),
         eventContent: function(arg) {
-    var class_topic = arg.event.extendedProps.class_topic;
-       
-    var location = arg.event.extendedProps.location;
-    if (location == 'online'){
-        var meeting_link = `<div><i class="fas fa-video"></i> Meeting link: <b><a href="${arg.event.extendedProps.meeting_link}" target="_blank" style="color: lightblue;">Join</a></b></div>`
-    }else{
-        var meeting_link = `<div><i class="fas fa-video"></i> Location: <b>Onsite<b></div>`
-    }
-       
+            var class_topic = arg.event.extendedProps.class_topic;
+            
+            var location = arg.event.extendedProps.location;
+            if (location == 'online'){
+                var meeting_link = `<div><i class="fas fa-video"></i> Meeting link: <b><a href="${arg.event.extendedProps.meeting_link}" target="_blank" style="color: lightblue;">Join</a></b></div>`
+            }else{
+                var meeting_link = `<div><i class="fas fa-video"></i> Location: <b>Onsite<b></div>`
+            }
+            
+            // Example HTML structure with FontAwesome icons
+            return {
+                html: `
+                    <div style="padding: 4px; background-color: ${arg.event.backgroundColor}; color: #20165b; border-radius: 4px;">
+                        <b>${arg.event.title}</b><br>
+                        <div><i class="fas fa-book"></i> Topic: ${class_topic}</div>
+                        ${meeting_link}
+                    </div>
+                `
+            };
+        },
+        eventDrop: function(info) {
+            var lesson = info.event;
+            var lessonId = lesson.id;
+            console.log('lessonId = ' + lessonId)
+            var startTime = lesson.start.toISOString();
+            var endTime = lesson.end.toISOString();
+            var csrftoken = getCookie('csrftoken'); // Retrieve CSRF token
 
-    // Example HTML structure with FontAwesome icons
-    return {
-        html: `
-            <div style="padding: 4px; background-color: ${arg.event.backgroundColor}; color: #20165b; border-radius: 4px;">
-                <b>${arg.event.title}</b><br>
-                <div><i class="fas fa-book"></i> Topic: ${class_topic}</div>
-                ${meeting_link}
-            </div>
-        `
-    };
-}
+            // Prepare data payload including CSRF token
+            var data = JSON.stringify({
+                id: lessonId,
+                start: startTime,
+                end: endTime,
+            });
+
+            fetch('{% url "update_lesson" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken, // Include CSRF token in request headers
+                },
+                body: data,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status == 'error') {
+                    // Revert the event back to its original position
+                    info.revert();
+                    console.error('Error:', data.message);
+                } else {
+                    console.log('Success:', data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Revert the event back to its original position
+                info.revert();
+            });
+        }
+
     });
     calendar.render();
 });
@@ -53,4 +98,48 @@ document.addEventListener('DOMContentLoaded', function() {
 {% endblock content %}
 
 {% block extra_js %}
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function updateLesson(lessonId, startTime, endTime) {
+        var csrftoken = getCookie('csrftoken'); // Function to get value of CSRF token cookie
+
+        var data = {
+            csrfmiddlewaretoken: csrftoken, // Include CSRF token in data payload
+            id: lessonId,
+            start: startTime,
+            end: endTime,
+        };
+
+        fetch('{% url "update_lesson" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Other headers if necessary
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            info.revert();
+        });
+    }
+</script>
 {% endblock extra_js %}
