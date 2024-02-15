@@ -9,8 +9,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.http import require_POST
 
+
 # Local application imports
-from .models import Lesson
+from .models import Lesson, Material
+from users.models import Teacher, Student
 
 
 def schedule(request):
@@ -22,6 +24,9 @@ def schedule(request):
     for lesson in lessons:
         total_lessons = lesson.english_class.lessons.count()
         lesson_number = list(lesson.english_class.lessons.order_by('start_time')).index(lesson) + 1
+        teachers = Teacher.objects.filter(taught_classes__lessons=lesson)
+        students = Student.objects.filter(enrolled_classes__lessons=lesson)
+        materials = Material.objects.filter(lessons=lesson)
 
         lessons_data.append({
             'id': lesson.id,
@@ -31,8 +36,12 @@ def schedule(request):
             'backgroundColor': lesson.english_class.color,
             'extendedProps': {
                 'class_topic': lesson.title,
-                'meeting_link': lesson.online_meeting_link,
+                'description': lesson.description,
+                'meeting_link': lesson.meeting_link,
                 'location': lesson.location,
+                'teachers': list(teachers.values('id', 'username')),
+                'students': list(students.values('id', 'username')),
+                'materials': list(materials.values('id', 'title')),
             }
         })
 

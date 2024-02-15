@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Example HTML structure with FontAwesome icons
             return {
                 html: `
-                    <div style="padding: 4px; background-color: ${arg.event.backgroundColor}; color: #20165b; border-radius: 4px;">
+                    <div style="padding: 4px; background-color: ${arg.event.backgroundColor}; color: white; border-radius: 4px;">
                         <b>${arg.event.title}</b><br>
                         <div><i class="fas fa-book"></i> Topic: ${class_topic}</div>
                         ${meeting_link}
@@ -83,7 +83,44 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Revert the event back to its original position
                 info.revert();
             });
-        }
+        },
+        eventClick: function(info) {
+            var lessonId = info.event.id;
+            $('#editLessonModalLabel').text('Edit Lesson: ' + info.event.title); // Example to set modal title dynamically
+            $('#lessonTitle').val(info.event.title);
+            $('#lessonDescription').val(info.event.extendedProps.description)
+            // Format start and end times to 'YYYY-MM-DDTHH:MM' for datetime-local input
+            var startTime = new Date(info.event.start).toISOString().slice(0, 16);
+            var endTime = new Date(info.event.end).toISOString().slice(0, 16);
+            $('#lessonStartTime').val(startTime);
+            $('#lessonEndTime').val(endTime);
+            // Populate other fields
+            $('#googleMeetLink').val(info.event.extendedProps.meeting_link)
+            // Filling in the location
+            $('#lessonLocation').val(info.event.extendedProps.location);
+            // Filling in the teachers
+            var teacherSelect = $('#lessonTeacher');
+            teacherSelect.empty(); // Clearing previous options
+            info.event.extendedProps.teachers.forEach(function(teacher) {
+                teacherSelect.append(new Option(teacher.username, teacher.id));
+            });
+
+            // Filling in the students
+            var studentSelect = $('#lessonStudents');
+            studentSelect.empty(); // Clearing previous options
+            info.event.extendedProps.students.forEach(function(student) {
+                studentSelect.append(new Option(student.username, student.id));
+            });
+
+            // Filling in materials
+            var materialSelect = $('#lessonMaterials');
+            materialSelect.empty(); // Clearing previous options
+            info.event.extendedProps.materials.forEach(function(material) {
+                materialSelect.append(new Option(material.title, material.id));
+            });
+
+            $('#editLessonModal').modal('show'); // Open the modal
+        },
 
     });
     calendar.render();
@@ -95,6 +132,75 @@ document.addEventListener('DOMContentLoaded', function() {
 
 {% block content %}
 <div id='calendar'></div>
+
+<!-- Edit Lesson Modal -->
+<div class="modal fade" id="editLessonModal" tabindex="-1" aria-labelledby="editLessonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editLessonModalLabel">Edit Lesson Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="editLessonForm">
+            <div class="form-group">
+              <label for="lessonTitle">Title</label>
+              <input type="text" class="form-control" id="lessonTitle" name="title" readonly>
+            </div>
+            <div class="form-group">
+              <label for="lessonDescription">Description</label>
+              <textarea class="form-control" id="lessonDescription" name="description"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="lessonStartTime">Start Time</label>
+              <input type="datetime-local" class="form-control" id="lessonStartTime" name="start_time">
+            </div>
+            <div class="form-group">
+              <label for="lessonEndTime">End Time</label>
+              <input type="datetime-local" class="form-control" id="lessonEndTime" name="end_time">
+            </div>
+            <div class="form-group">
+              <label for="lessonLocation">Location</label>
+              <select class="form-control" id="lessonLocation" name="location">
+                <option value="on-site">On-site</option>
+                <option value="online">Online</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="googleMeetLink">Meeting Link</label>
+              <input type="url" class="form-control" id="googleMeetLink" name="google_meet_link">
+            </div>
+            <!-- Additional fields for teacher, students, and materials -->
+            <div class="form-group">
+              <label for="lessonTeacher">Teacher</label>
+              <select class="form-control" id="lessonTeacher" name="teacher">
+                <!-- Dynamically populate teachers -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="lessonStudents">Students</label>
+              <select multiple class="form-control" id="lessonStudents" name="students">
+                <!-- Dynamically populate students -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="lessonMaterials">Materials</label>
+              <select multiple class="form-control" id="lessonMaterials" name="materials">
+                <!-- Dynamically populate materials -->
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="saveLessonDetails()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 {% endblock content %}
 
 {% block extra_js %}

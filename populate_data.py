@@ -25,7 +25,7 @@ def generate_schedule_dates(year=2024, month=3, last_date=None):
 
 
 # Generate a random Google Meet link
-def generate_google_meet_link():
+def generate_meeting_link():
     return "https://meet.google.com/" + "".join(random.choices("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", k=10))
 
 
@@ -57,7 +57,7 @@ def create_lessons_for_class(english_class, schedule, lesson_titles):
                 description=f"Description for {lesson_title}",
                 start_time=start_time,
                 end_time=end_time,
-                google_meet_link=generate_google_meet_link(),
+                meeting_link=generate_meeting_link(),
                 location=random.choice(['on-site', 'online']),
                 status='planned'
             )

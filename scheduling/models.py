@@ -4,25 +4,38 @@ from django.utils import timezone
 import random
 
 
-# Example set of 30 dark colors
-DARK_COLORS = [
-    '#00416A', '#1A1A1D', '#0A0F0D', '#4B0082', '#002635', 
-    '#2C3531', '#123456', '#2A2B2D', '#343837', '#3B3C36',
-    '#413839', '#3D3E40', '#464646', '#484848', '#494949',
-    '#4C4F50', '#4F4A4A', '#515151', '#525252', '#555555',
-    '#565051', '#5B5A5A', '#5C5B5B', '#5D5D5D', '#616569',
-    '#626D6D', '#646464', '#666362', '#696969', '#6E6A6B'
-]
+def generate_hsl_color(unique_identifier, saturation=100, lightness=30):
+    """
+    Generate a unique HSL color based on a unique identifier.
+
+    Args:
+    - unique_identifier: A unique string to base the color on (e.g., class title).
+    - saturation: Saturation percentage of the color (default: 100).
+    - lightness: Lightness percentage of the color (default: 30).
+
+    Returns:
+    - A string representing an HSL color.
+    """
+    # Convert the unique identifier to a hash value to get a pseudo-random number
+    hash_value = int(hashlib.sha256(unique_identifier.encode('utf-8')).hexdigest(), 16)
+    # Use the hash value to generate a hue value between 0 and 360
+    hue = hash_value % 360
+    # Return the HSL color string
+    return f'hsl({hue}, {saturation}%, {lightness}%)'
 
 
-def generate_unique_dark_color(excluded_colors):
+def check_color_uniqueness(color, used_colors):
     """
-    Generates a unique dark color that's not in the excluded_colors list.
+    Check if the generated color is unique.
+
+    Args:
+    - color: The generated HSL color string.
+    - used_colors: A list of already used colors.
+
+    Returns:
+    - True if the color is unique, False otherwise.
     """
-    available_colors = [color for color in DARK_COLORS if color not in excluded_colors]
-    if not available_colors:  # If all colors are used, fallback to a random choice or handle differently
-        return random.choice(DARK_COLORS)
-    return random.choice(available_colors)
+    return color not in used_colors
 
 
 # Модель EnglishClass представляет учебный класс или курс
@@ -49,11 +62,16 @@ class EnglishClass(models.Model):
         verbose_name_plural = "English Classes"
 
     def save(self, *args, **kwargs):
-        if not self.color or self.color == '#FFFFFF':  # If color not set
-            # Fetch already used colors
-            used_colors = list(EnglishClass.objects.values_list('color', flat=True))
-            self.color = generate_unique_dark_color(used_colors)
-        super(EnglishClass, self).save(*args, **kwargs)
+        super(EnglishClass, self).save(*args, **kwargs)  # Save first to get an ID
+
+        # Fetch already used colors again, including this instance's color
+        used_colors = EnglishClass.objects.exclude(id=self.id).values_list('color', flat=True)
+        for class_title in ["English 101", "Mathematics", "History"]:
+            while True:
+                color = generate_hsl_color(class_title)
+                if check_color_uniqueness(color, used_colors):
+                    used_colors.append(color)
+                    break
 
     def number_of_students(self):
         """Returns the number of students enrolled in the class."""
@@ -113,10 +131,10 @@ class Lesson(models.Model):
     )
     start_time = models.DateTimeField(verbose_name="Start Time")
     end_time = models.DateTimeField(verbose_name="End Time")
-    google_meet_link = models.URLField(
+    meeting_link = models.URLField(
         blank=True,
         null=True,
-        verbose_name="Google Meet Link"
+        verbose_name="Meeting Link"
     )
     LOCATION_CHOICES = [
         ('on-site', 'On-site'),
@@ -125,10 +143,6 @@ class Lesson(models.Model):
     location = models.CharField(
         max_length=10,
         choices=LOCATION_CHOICES, default='on-site', verbose_name="location")
-    # location = models.CharField(
-    #     max_length=255, blank=True, null=True, verbose_name="Location")
-    online_meeting_link = models.URLField(
-        blank=True, null=True, verbose_name="Online Meeting Link")
     STATUS_CHOICES = [
         ('planned', 'Planned'),
         ('completed', 'Completed'),
