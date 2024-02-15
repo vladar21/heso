@@ -51,14 +51,18 @@ def create_lessons_for_class(english_class, schedule, lesson_titles):
             start_time = make_aware(datetime.datetime.combine(current_date, datetime.time(random.choice(range(9, 17)), 0)))
             end_time = start_time + datetime.timedelta(hours=2)  # Assuming each lesson lasts 2 hours
             lesson_title = random.choice(lesson_titles)
+            location = random.choice(['on-site', 'online'])
+            # Generate meeting link only if location is 'online'
+            meeting_link = generate_meeting_link() if location == 'online' else ""
+
             lesson = Lesson.objects.create(
                 english_class=english_class,
                 title=lesson_title,
                 description=f"Description for {lesson_title}",
                 start_time=start_time,
                 end_time=end_time,
-                meeting_link=generate_meeting_link(),
-                location=random.choice(['on-site', 'online']),
+                location=location,
+                meeting_link=meeting_link,
                 status='planned'
             )
             create_materials_for_lesson(lesson)

@@ -1,7 +1,7 @@
+import hashlib
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
-import random
 
 
 def generate_hsl_color(unique_identifier, saturation=100, lightness=30):
@@ -42,7 +42,7 @@ def check_color_uniqueness(color, used_colors):
 class EnglishClass(models.Model):
     title = models.CharField(max_length=255, verbose_name="Title")
     description = models.TextField(verbose_name="Description")
-    color = models.CharField(max_length=7, default='#FFFFFF')
+    color = models.CharField(max_length=20, default='#FFFFFF')
     teacher = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -62,16 +62,16 @@ class EnglishClass(models.Model):
         verbose_name_plural = "English Classes"
 
     def save(self, *args, **kwargs):
-        super(EnglishClass, self).save(*args, **kwargs)  # Save first to get an ID
-
-        # Fetch already used colors again, including this instance's color
-        used_colors = EnglishClass.objects.exclude(id=self.id).values_list('color', flat=True)
-        for class_title in ["English 101", "Mathematics", "History"]:
-            while True:
-                color = generate_hsl_color(class_title)
-                if check_color_uniqueness(color, used_colors):
-                    used_colors.append(color)
-                    break
+        if not self.color or self.color == '#FFFFFF':
+            # Получаем уже использованные цвета
+            used_colors = set(EnglishClass.objects.exclude(id=self.id).values_list('color', flat=True))
+            # Генерируем уникальный цвет
+            new_color = generate_hsl_color(self.title)
+            while new_color in used_colors:
+                # Генерация нового цвета, если найденный уже использован
+                new_color = generate_hsl_color(self.title + str(len(used_colors)))
+            self.color = new_color
+        super().save(*args, **kwargs)
 
     def number_of_students(self):
         """Returns the number of students enrolled in the class."""
