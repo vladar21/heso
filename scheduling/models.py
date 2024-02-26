@@ -38,7 +38,7 @@ def check_color_uniqueness(color, used_colors):
     return color not in used_colors
 
 
-# Модель EnglishClass представляет учебный класс или курс
+# The EnglishClass model represents a classroom or course
 class EnglishClass(models.Model):
     title = models.CharField(max_length=255, verbose_name="Title")
     description = models.TextField(verbose_name="Description")
@@ -63,12 +63,12 @@ class EnglishClass(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.color or self.color == '#FFFFFF':
-            # Получаем уже использованные цвета
+            # Getting the colours already used
             used_colors = set(EnglishClass.objects.exclude(id=self.id).values_list('color', flat=True))
-            # Генерируем уникальный цвет
+            # Generating a unique colour
             new_color = generate_hsl_color(self.title)
             while new_color in used_colors:
-                # Генерация нового цвета, если найденный уже использован
+                # Generate a new colour if the found colour is already used
                 new_color = generate_hsl_color(self.title + str(len(used_colors)))
             self.color = new_color
         super().save(*args, **kwargs)
@@ -86,7 +86,7 @@ class EnglishClass(models.Model):
         return self.title
 
 
-# Модель Schedule связывает классы с их расписаниями
+# The Schedule model associates classes with their schedules
 class Schedule(models.Model):
     english_class = models.ForeignKey(
         EnglishClass,
@@ -115,7 +115,7 @@ class Schedule(models.Model):
         return f"{self.english_class.title} Schedule"
 
 
-# Модель Lesson для отдельных занятий
+# Lesson model for individual lessons
 class Lesson(models.Model):
     english_class = models.ForeignKey(
         EnglishClass,
@@ -176,7 +176,7 @@ class Lesson(models.Model):
         return self.title
 
 
-# Модель Material для учебных материалов
+# Material model for training materials
 class Material(models.Model):
     title = models.CharField(max_length=255, verbose_name="Title")
     type = models.CharField(max_length=100, verbose_name="Type")
@@ -213,7 +213,7 @@ class Material(models.Model):
         return self.title
 
 
-# Модель GoogleCalendarEvent для событий Google Календаря
+# GoogleCalendarEvent model for Google Calendar events
 class GoogleCalendarEvent(models.Model):
     lesson = models.ForeignKey(
         Lesson,

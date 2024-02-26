@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }else{
                 var meeting_link = `<div><i class="fas fa-video"></i> Location: <b>Onsite<b></div>`
             }
-            
+
             // Example HTML structure with FontAwesome icons
             return {
                 html: `
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         eventDrop: function(info) {
             var lesson = info.event;
             var lessonId = lesson.id;
-            console.log('lessonId = ' + lessonId)
+           
             var startTime = lesson.start.toISOString();
             var endTime = lesson.end.toISOString();
             var csrftoken = getCookie('csrftoken'); // Retrieve CSRF token
@@ -86,6 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         eventClick: function(info) {
             var lessonId = info.event.id;
+            $('#lessonId').val(lessonId);
             $('#editLessonModalLabel').text('Edit Lesson: ' + info.event.title); // Example to set modal title dynamically
             $('#lessonTitle').val(info.event.title);
             $('#lessonDescription').val(info.event.extendedProps.description)
@@ -145,9 +146,10 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         <div class="modal-body">
           <form id="editLessonForm">
+            <input type="hidden" id="lessonId" name="lessonId" value="">
             <div class="form-group">
               <label for="lessonTitle">Title</label>
-              <input type="text" class="form-control" id="lessonTitle" name="title" readonly>
+              <input type="text" class="form-control" id="lessonTitle" name="title" disabled>
             </div>
             <div class="form-group">
               <label for="lessonDescription">Description</label>
@@ -205,47 +207,75 @@ document.addEventListener('DOMContentLoaded', function() {
 
 {% block extra_js %}
 <script>
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
+  
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  function saveLessonDetails() {
+    var lessonId = $('#lessonId').val();
+    var formData = new FormData(document.getElementById('editLessonForm'));
+    formData.append('csrfmiddlewaretoken', getCookie('csrftoken')); // CSRF token
+
+    fetch('{% url "update_lesson" %}', {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin' // is necessary for correct operation of CSRF
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            console.log('Lesson updated successfully');
+            $('#editLessonModal').modal('hide');
+            var event = calendar.getEventById(lessonId);
+            if(event) {
+              // Getting data from the form
+              var title = document.getElementById('lessonTitle').value;
+              var description = document.getElementById('lessonDescription').value;
+              var startTime = document.getElementById('lessonStartTime').value;
+              var endTime = document.getElementById('lessonEndTime').value;
+              var location = document.getElementById('lessonLocation').value;
+              var meetingLink = document.getElementById('googleMeetLink').value;
+              var teacher = $('#lessonTeacher option:selected').text();
+              
+              // Updating the event properties
+              event.setProp('title', title);
+              event.setStart(startTime);
+              event.setEnd(endTime);
+              event.setExtendedProp('description', description);
+              event.setExtendedProp('location', location);
+              event.setExtendedProp('meeting_link', meetingLink);
+              event.setExtendedProp('teacher', teacher);
+
+              // Update the calendar to show changes
+              // calendar.refetchEvents();
             }
+        } else {
+            alert('Error updating lesson: ' + data.message);
         }
-        return cookieValue;
-    }
+    })
+    .catch(error => console.error('Error:', error));
+  }
 
-    function updateLesson(lessonId, startTime, endTime) {
-        var csrftoken = getCookie('csrftoken'); // Function to get value of CSRF token cookie
+  // var teachersList = JSON.parse('{{ teachers|safe }}');
+  // $('#editLessonModal').on('show.bs.modal', function () {
+  //   var teacherSelect = $('#lessonTeacher');
+  //   teacherSelect.empty();
+  //   teachersList.forEach(function(teacher) {
+  //       teacherSelect.append(new Option(teacher.name, teacher.id));
+  //   });
+  // });
 
-        var data = {
-            csrfmiddlewaretoken: csrftoken, // Include CSRF token in data payload
-            id: lessonId,
-            start: startTime,
-            end: endTime,
-        };
-
-        fetch('{% url "update_lesson" %}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // Other headers if necessary
-            },
-            body: JSON.stringify(data),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            info.revert();
-        });
-    }
 </script>
 {% endblock extra_js %}
