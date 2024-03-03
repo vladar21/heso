@@ -271,18 +271,23 @@
     .catch(error => console.error('Error:', error));
   }
 
+  // Event listener for the change event of the Location field
+  $('#lessonLocation').change(function() {
+      // Get the value of the Location field
+      var location = $(this).val();
+      // Get the MeetingLink input element
+      var meetingLinkInput = $('#MeetingLink');
+      
+      // If the value of the Location field is 'on-site', make the MeetingLink field readonly
+      if (location === 'on-site') {
+        meetingLinkInput.val('');
+        meetingLinkInput.prop('readonly', true);
+      } else {
+        // If the value of the Location field is not 'on-site', remove the readonly attribute
+        meetingLinkInput.prop('readonly', false);
+      }
+  });
 
-
-
-
-  // var teachersList = JSON.parse('{{ teachers|safe }}');
-  // $('#editLessonModal').on('show.bs.modal', function () {
-  //   var teacherSelect = $('#lessonTeacher');
-  //   teacherSelect.empty();
-  //   teachersList.forEach(function(teacher) {
-  //       teacherSelect.append(new Option(teacher.name, teacher.id));
-  //   });
-  // });
 
 </script>
 {% endblock extra_js %}
