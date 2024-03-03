@@ -8,9 +8,11 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 <script>
 
-document.addEventListener('DOMContentLoaded', function() {
+  var calendar;
+
+  document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+    calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         editable: true,
         headerToolbar: {
@@ -96,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
             $('#lessonStartTime').val(startTime);
             $('#lessonEndTime').val(endTime);
             // Populate other fields
-            $('#googleMeetLink').val(info.event.extendedProps.meeting_link)
+            $('#MeetingLink').val(info.event.extendedProps.meeting_link)
             // Filling in the location
             $('#lessonLocation').val(info.event.extendedProps.location);
             // Filling in the teachers
@@ -125,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     });
     calendar.render();
-});
+  });
 
 </script>
 {% endblock extra_head %}
@@ -171,8 +173,8 @@ document.addEventListener('DOMContentLoaded', function() {
               </select>
             </div>
             <div class="form-group">
-              <label for="googleMeetLink">Meeting Link</label>
-              <input type="url" class="form-control" id="googleMeetLink" name="google_meet_link">
+              <label for="MeetingLink">Meeting Link</label>
+              <input type="url" class="form-control" id="MeetingLink" name="meeting_link">
             </div>
             <!-- Additional fields for teacher, students, and materials -->
             <div class="form-group">
@@ -223,7 +225,9 @@ document.addEventListener('DOMContentLoaded', function() {
       return cookieValue;
   }
 
+  // Function to save lesson details
   function saveLessonDetails() {
+    
     var lessonId = $('#lessonId').val();
     var formData = new FormData(document.getElementById('editLessonForm'));
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken')); // CSRF token
@@ -237,36 +241,39 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(data => {
         if (data.status === 'success') {
             console.log('Lesson updated successfully');
-            $('#editLessonModal').modal('hide');
+            $('#lessonTitle').val(data.lesson.title);
+            $('#lessonDescription').val(data.lesson.description);
+           
+            var startTime = new Date(data.lesson.start).toISOString().slice(0, 16);
+            var endTime = new Date(data.lesson.end).toISOString().slice(0, 16);
+            $('#lessonStartTime').val(startTime);
+            $('#lessonEndTime').val(endTime);
+           
+            $('#lessonLocation').val(data.lesson.location);
+            $('#MeetingLink').val(data.lesson.meeting_link);
+            
             var event = calendar.getEventById(lessonId);
             if(event) {
-              // Getting data from the form
-              var title = document.getElementById('lessonTitle').value;
-              var description = document.getElementById('lessonDescription').value;
-              var startTime = document.getElementById('lessonStartTime').value;
-              var endTime = document.getElementById('lessonEndTime').value;
-              var location = document.getElementById('lessonLocation').value;
-              var meetingLink = document.getElementById('googleMeetLink').value;
-              var teacher = $('#lessonTeacher option:selected').text();
-              
-              // Updating the event properties
-              event.setProp('title', title);
-              event.setStart(startTime);
-              event.setEnd(endTime);
-              event.setExtendedProp('description', description);
-              event.setExtendedProp('location', location);
-              event.setExtendedProp('meeting_link', meetingLink);
-              event.setExtendedProp('teacher', teacher);
-
-              // Update the calendar to show changes
-              // calendar.refetchEvents();
+                event.setProp('title', data.lesson.title);
+                event.setStart(data.lesson.start);
+                event.setEnd(data.lesson.end);
+                event.setExtendedProp('description', data.lesson.extendedProps.description);
+                event.setExtendedProp('location', data.lesson.extendedProps.location);
+                event.setExtendedProp('meeting_link', data.lesson.extendedProps.meeting_link);
             }
+            
+            $('#editLessonModal').modal('hide');
+            
         } else {
             alert('Error updating lesson: ' + data.message);
         }
     })
     .catch(error => console.error('Error:', error));
   }
+
+
+
+
 
   // var teachersList = JSON.parse('{{ teachers|safe }}');
   // $('#editLessonModal').on('show.bs.modal', function () {
