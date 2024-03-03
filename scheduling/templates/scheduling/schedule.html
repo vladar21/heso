@@ -105,21 +105,27 @@
             var teacherSelect = $('#lessonTeacher');
             teacherSelect.empty(); // Clearing previous options
             info.event.extendedProps.teachers.forEach(function(teacher) {
-                teacherSelect.append(new Option(teacher.username, teacher.id));
+              console.log('info teacher_id ', info.event.extendedProps.teacher_id, ', teacher.id ', teacher.id)
+              var option = new Option(teacher.username, teacher.id);
+              console.log('info compare ', teacher.id === info.event.extendedProps.teacher_id)
+              if (teacher.id == info.event.extendedProps.teacher_id) {
+                  option.setAttribute('selected', 'selected');
+              }
+              teacherSelect.append(option);
             });
 
             // Filling in the students
             var studentSelect = $('#lessonStudents');
             studentSelect.empty(); // Clearing previous options
             info.event.extendedProps.students.forEach(function(student) {
-                studentSelect.append(new Option(student.username, student.id));
+              studentSelect.append(new Option(student.username, student.id));
             });
 
             // Filling in materials
             var materialSelect = $('#lessonMaterials');
             materialSelect.empty(); // Clearing previous options
             info.event.extendedProps.materials.forEach(function(material) {
-                materialSelect.append(new Option(material.title, material.id));
+              materialSelect.append(new Option(material.title, material.id));
             });
 
             $('#editLessonModal').modal('show'); // Open the modal
@@ -241,17 +247,6 @@
     .then(data => {
         if (data.status === 'success') {
             console.log('Lesson updated successfully');
-            $('#lessonTitle').val(data.lesson.title);
-            $('#lessonDescription').val(data.lesson.description);
-           
-            var startTime = new Date(data.lesson.start).toISOString().slice(0, 16);
-            var endTime = new Date(data.lesson.end).toISOString().slice(0, 16);
-            $('#lessonStartTime').val(startTime);
-            $('#lessonEndTime').val(endTime);
-           
-            $('#lessonLocation').val(data.lesson.location);
-            $('#MeetingLink').val(data.lesson.meeting_link);
-            
             var event = calendar.getEventById(lessonId);
             if(event) {
                 event.setProp('title', data.lesson.title);
@@ -260,9 +255,11 @@
                 event.setExtendedProp('description', data.lesson.extendedProps.description);
                 event.setExtendedProp('location', data.lesson.extendedProps.location);
                 event.setExtendedProp('meeting_link', data.lesson.extendedProps.meeting_link);
+                event.setExtendedProp('teacher_id', data.lesson.extendedProps.teacher_id);
             }
             
             $('#editLessonModal').modal('hide');
+            calendar.refetchEvents();
             
         } else {
             alert('Error updating lesson: ' + data.message);

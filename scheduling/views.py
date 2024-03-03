@@ -43,6 +43,7 @@ def schedule(request):
                 'description': lesson.description,
                 'meeting_link': lesson.meeting_link,
                 'location': lesson.location,
+                'teacher_id': lesson.english_class.teacher.id,
                 'teachers': list(teachers.values('id', 'username')),
                 'students': list(students.values('id', 'username')),
                 'materials': list(materials.values('id', 'title')),
@@ -109,7 +110,6 @@ def update_lesson(request):
 
             # Проверяем, действительно ли данные урока изменились в базе данных
             updated_lesson = Lesson.objects.get(pk=lesson_id)
-            print("lesson :", updated_lesson.__dict__)
 
             # Подготавливаем данные обновленного урока для передачи в шаблон
             total_lessons = updated_lesson.english_class.lessons.count()
@@ -130,11 +130,14 @@ def update_lesson(request):
                     'description': updated_lesson.description,
                     'meeting_link': updated_lesson.meeting_link,
                     'location': updated_lesson.location,
+                    'teacher_id': updated_lesson.english_class.teacher.id,
                     'teachers': list(teachers.values('id', 'username')),
                     'students': list(students.values('id', 'username')),
                     'materials': list(materials.values('id', 'title')),
                 }
             }
+
+            print("lesson :", updated_lesson_data)
 
             return JsonResponse({'status': 'success', 'message': 'Lesson updated successfully.', 'lesson': updated_lesson_data})
     except Lesson.DoesNotExist:
