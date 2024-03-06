@@ -230,6 +230,37 @@ Each sprint in this schedule is a focused development cycle that addresses speci
 ## Testing
 - Outline of testing strategies for ensuring system functionality and reliability.
 
+## Bugs
+
+### 1. Doubling while saving new material
+
+- **Description:** When we add new material in the upload form, in the list of lesson materials we see double titles of ones.
+
+  <img src="assets/images/doubling_while_saving_new_material.jpg" width="600" alt="doubling while saving new material">
+
+- **Solution:** Using the get_or_create method on the backend, which allows you to get an existing material or create a new one if it doesn't exist.
+
+  ```bash
+  # Update materials if provided
+  if 'materials' in data:
+      material_ids = data['materials']
+      lesson.materials.clear()
+      lesson.materials.set(Material.objects.filter(id__in=material_ids))
+  
+  if request.FILES.getlist('new_materials'):
+      for uploaded_file in request.FILES.getlist('new_materials'):
+          if uploaded_file:
+              material, created = Material.objects.get_or_create(
+                  title=uploaded_file.name,
+                  type="file",
+                  content=uploaded_file.read()
+              )
+              if created:
+                  lesson.materials.add(material)
+  
+  lesson.save()
+  ```
+
 ## Contributing
 - Information for developers interested in contributing to the HESO project.
 

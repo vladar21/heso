@@ -121,17 +121,14 @@ def update_lesson(request):
             
             lesson.save()
 
-            # Проверяем, действительно ли данные урока изменились в базе данных
             updated_lesson = Lesson.objects.get(pk=lesson_id)
 
-            # Подготавливаем данные обновленного урока для передачи в шаблон
             total_lessons = updated_lesson.english_class.lessons.count()
             lesson_number = list(updated_lesson.english_class.lessons.order_by('start_time')).index(updated_lesson) + 1
             teachers = Teacher.objects.all()
             students = Student.objects.filter(enrolled_classes__lessons=updated_lesson)
             materials = Material.objects.filter(lessons=updated_lesson)
 
-            # Формируем словарь с обновленными данными урока
             updated_lesson_data = {
                 'id': updated_lesson.id,
                 'title': f"{updated_lesson.english_class.title} ({lesson_number}/{total_lessons}) | {updated_lesson.english_class.teacher.username}",
