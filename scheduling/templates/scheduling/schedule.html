@@ -266,10 +266,18 @@
                 event.setExtendedProp('location', data.lesson.extendedProps.location);
                 event.setExtendedProp('meeting_link', data.lesson.extendedProps.meeting_link);
                 event.setExtendedProp('teacher_id', data.lesson.extendedProps.teacher_id);
+                event.setExtendedProp('materials', data.lesson.extendedProps.materials);
             }
 
             $('#editLessonModal').modal('hide');
             calendar.refetchEvents();
+
+            // Update materials select options
+            var materialSelect = $('#lessonMaterials');
+            materialSelect.empty(); // Clear previous options
+            data.lesson.extendedProps.materials.forEach(function(material) {
+                materialSelect.append(new Option(material.title, material.id));
+            });
             
         } else {
             alert('Error updating lesson: ' + data.message);
