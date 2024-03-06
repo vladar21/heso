@@ -180,17 +180,8 @@ class Lesson(models.Model):
 class Material(models.Model):
     title = models.CharField(max_length=255, verbose_name="Title")
     type = models.CharField(max_length=100, verbose_name="Type")
-    content = models.FileField(
-        upload_to='materials/',
-        blank=True,
-        null=True,
-        verbose_name="Content"
-    )
-    english_class = models.ManyToManyField(
-        EnglishClass,
-        related_name='materials',
-        verbose_name="English Classes"
-    )
+    content = models.BinaryField(blank=True, null=True, verbose_name="Content")
+    
     lessons = models.ManyToManyField(
         Lesson,
         related_name='materials',

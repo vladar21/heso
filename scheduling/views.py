@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.db import transaction
+import io
 
 
 # Local application imports
@@ -104,7 +105,19 @@ def update_lesson(request):
             # Update materials if provided
             if 'materials' in data:
                 material_ids = data['materials']
+                lesson.materials.clear()
                 lesson.materials.set(Material.objects.filter(id__in=material_ids))
+            
+            if request.FILES.getlist('new_materials'):
+                for uploaded_file in request.FILES.getlist('new_materials'):
+                    if uploaded_file:
+                        material, created = Material.objects.get_or_create(
+                            title=uploaded_file.name,
+                            type="file",
+                            content=uploaded_file.read()
+                        )
+                        if created:
+                            lesson.materials.add(material)
             
             lesson.save()
 
