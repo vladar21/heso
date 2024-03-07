@@ -281,23 +281,37 @@
     .catch(error => console.error('Error:', error));
   }
 
-  // Event listener for the change event of the Location field
-  $('#lessonLocation').change(function() {
-      // Get the value of the Location field
-      var location = $(this).val();
-      // Get the MeetingLink input element
-      var meetingLinkInput = $('#MeetingLink');
-      
-      // If the value of the Location field is 'on-site', make the MeetingLink field readonly
-      if (location === 'on-site') {
+  function handleLocationChange() {
+    // Get the value of the Location field
+    var location = $('#lessonLocation').val();
+    
+    // Get the MeetingLink input element
+    var meetingLinkInput = $('#MeetingLink');
+    
+    // If the value of the Location field is 'on-site', make the MeetingLink field readonly
+    if (location === 'on-site') {
         meetingLinkInput.val('');
         meetingLinkInput.prop('readonly', true);
-      } else {
+    } else {
         // If the value of the Location field is not 'on-site', remove the readonly attribute
         meetingLinkInput.prop('readonly', false);
-      }
-  });
+    }
+}
 
+$(document).ready(function() {
+
+    handleLocationChange();
+    
+    // Event listener for the change event of the Location field
+    $('#lessonLocation').change(handleLocationChange);
+
+    // Event listener for opening the modal
+    $('#editLessonModal').on('show.bs.modal', function() {
+        // Update the readonly attribute of the MeetingLink input based on the current value of the Location field
+        $('#lessonLocation').trigger('change');
+    });
+});
+  
 
 </script>
 {% endblock extra_js %}
