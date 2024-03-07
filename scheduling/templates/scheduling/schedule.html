@@ -272,15 +272,10 @@
             $('#editLessonModal').modal('hide');
             calendar.refetchEvents();
 
-            // Update materials select options
-            var materialSelect = $('#lessonMaterials');
-            materialSelect.empty(); // Clear previous options
-            data.lesson.extendedProps.materials.forEach(function(material) {
-                materialSelect.append(new Option(material.title, material.id));
-            });
+            showMessage('success', data.message);
             
         } else {
-            alert('Error updating lesson: ' + data.message);
+            showMessage('error', data.message);
         }
     })
     .catch(error => console.error('Error:', error));
