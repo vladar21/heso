@@ -28,10 +28,10 @@
                 </ul>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                    <li class="nav-item {% if current_path == '/classes/' %}active{% endif %}">
+                    <li class="nav-item {% if current_path == '/classes/list/' %}active{% endif %}">
                         <a class="nav-link" href="{% url 'english_class_list' %}">Classes</a>
                     </li>                    
-                    <li class="nav-item {% if current_path == '/schedule/' %}active{% endif %}">
+                    <li class="nav-item {% if current_path == '/classes/' %}active{% endif %}">
                         <a class="nav-link" href="{% url 'schedule' %}">Lessons</a>
                     </li>
                     <li class="nav-item {% if current_path == '/users/logout/' %}active{% endif %}">

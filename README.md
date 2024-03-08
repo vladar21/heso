@@ -260,6 +260,15 @@ Each sprint in this schedule is a focused development cycle that addresses speci
   
   lesson.save()
   ```
+  ### 2. Don't highlight current menu item
+
+- **Description:** When the user clicks on a menu item that doesn't have an active class (highlighted in bold white).
+
+  <img src="assets/images/not_highlighting_current_menu_item.jpg" width="600" alt="not highlighting current menu item">
+
+- **Solution:** Need accurate writing of the URL to use for comparisons.
+
+ <img src="assets/images/fix_not_highlighting_current_menu_item.jpg" width="600" alt="fix not highlighting current menu item">
 
 ## Contributing
 - Information for developers interested in contributing to the HESO project.
