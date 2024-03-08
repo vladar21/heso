@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>English Classes</h2>
+        <div class="mb-3 d-flex justify-content-end">
+            <a href="{% url 'create_english_class' %}" class="btn btn-success ml-auto"><b>Create</b></a>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Teacher</th>
+                    <th>Students</th>
+                    <th>Date Start</th>
+                    <th>Date End</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for schedule in schedules %}
+                <tr>
+                    <td>{{ schedule.english_class.title }}</td>
+                    <td>{{ schedule.english_class.teacher }}</td>
+                    <td>
+                        {% for student in schedule.english_class.students.all %}
+                        {{ student.username }}
+                        {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                      </td>
+                    <td>{{ schedule.start_date }}</td>
+                    <td>{{ schedule.end_date }}</td>
+                    <td>
+                        <a href="{% url 'update_english_class' schedule.english_class.pk %}" class="btn btn-primary">Update</a>
+                        <a href="{% url 'delete_english_class' schedule.english_class.pk %}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

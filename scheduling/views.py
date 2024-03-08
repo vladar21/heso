@@ -1,9 +1,8 @@
 # Standard library imports
 import json
-from zoneinfo import ZoneInfo
 
 # Third-party imports (Django is considered a third-party library)
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.dateparse import parse_datetime
@@ -11,12 +10,13 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.db import transaction
-import io
 
 
 # Local application imports
 from .models import Lesson, Material
 from users.models import Teacher, Student
+from .forms import EnglishClassForm, ScheduleForm
+from .models import EnglishClass, Schedule
 
 
 def schedule(request):
@@ -158,3 +158,64 @@ def update_lesson(request):
     except Exception as e:
         # General exception catch to handle unforeseen errors
         return JsonResponse({'status': 'error', 'message': f'Unexpected error: {str(e)}'}, status=400)
+
+
+def create_english_class(request):
+    if request.method == 'POST':
+        class_form = EnglishClassForm(request.POST)
+        schedule_form = ScheduleForm(request.POST)
+        if class_form.is_valid() and schedule_form.is_valid():
+            new_class = class_form.save()
+            new_schedule = schedule_form.save(commit=False)
+            new_schedule.english_class = new_class  # Связываем расписание с только что созданным классом
+            new_schedule.save()
+            return redirect('english_class_list')  # Убедитесь, что это правильный путь куда вы хотите перенаправить пользователя
+    else:
+        class_form = EnglishClassForm()
+        schedule_form = ScheduleForm()
+    
+    context = {
+        'class_form': class_form,
+        'schedule_form': schedule_form,
+    }
+    return render(request, 'scheduling/create_english_class.html', context)
+
+
+def update_english_class(request, pk):
+    english_class = get_object_or_404(EnglishClass, pk=pk)
+    schedule, created = Schedule.objects.get_or_create(english_class=english_class)  # Создаем или получаем расписание, связанное с классом
+    
+    if request.method == 'POST':
+        class_form = EnglishClassForm(request.POST, instance=english_class)
+        schedule_form = ScheduleForm(request.POST, instance=schedule)
+        
+        if class_form.is_valid() and schedule_form.is_valid():
+            class_form.save()
+            schedule_form.save()
+            
+            return redirect('english_class_list')
+    else:
+        class_form = EnglishClassForm(instance=english_class)
+        schedule_form = ScheduleForm(instance=schedule)
+    
+    # Создаем контекст для передачи в шаблон
+    context = {
+        'class_form': class_form,
+        'schedule_form': schedule_form,
+        'english_class': english_class  # Если нужно отобразить дополнительную информацию об английском классе
+    }
+    # Передаем контекст в шаблон
+    return render(request, 'scheduling/update_english_class.html', context)
+
+
+def english_class_list(request):
+    schedules = Schedule.objects.all()
+    return render(request, 'scheduling/english_class_list.html', {'schedules': schedules})
+
+
+def delete_english_class(request, pk):
+    schedule = get_object_or_404(Schedule, english_class__pk=pk)  # Используем double underscore для доступа к связанному EnglishClass по pk
+    if request.method == 'POST':
+        schedule.delete()  # Удаление schedule автоматически удалит связанный EnglishClass, если установлен on_delete=models.CASCADE
+        return redirect('english_class_list')
+    return render(request, 'scheduling/delete_english_class.html', {'english_class': schedule.english_class})

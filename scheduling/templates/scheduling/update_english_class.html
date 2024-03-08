@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2>Update Class and Schedule</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ class_form.title.label_tag }}
+            {{ class_form.title }}
+        </div>
+        <div class="form-group">
+            {{ class_form.description.label_tag }}
+            {{ class_form.description }}
+        </div>
+        <!-- Добавьте остальные поля класса здесь -->
+        <div class="form-group">
+            {{ class_form.color.label_tag }}
+            {{ class_form.color }}
+        </div>
+        <div class="form-group">
+            {{ class_form.teacher.label_tag }}
+            {{ class_form.teacher }}
+        </div>
+        <div class="form-group">
+            {{ class_form.students.label_tag }}
+            {{ class_form.students }}
+        </div>
+        <!-- Поля ScheduleForm -->
+        <div class="form-group">
+            {{ schedule_form.term.label_tag }}
+            {{ schedule_form.term }}
+        </div>
+        <div class="form-group">
+            {{ schedule_form.start_date.label_tag }}
+            {{ schedule_form.start_date }}
+        </div>
+        <div class="form-group">
+            {{ schedule_form.end_date.label_tag }}
+            {{ schedule_form.end_date }}
+        </div>
+        <button type="submit" class="btn btn-primary">Update Schedule and Class</button>
+    </form>
+</div>
+{% endblock %}
