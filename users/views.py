@@ -19,10 +19,7 @@ def register(request):
 
 
 def home(request):
-    if request.user.is_authenticated:
-        return redirect('/schedule')
-    else:
-        return redirect('login')
+    return redirect('/schedule')
 
 
 def custom_logout(request):
