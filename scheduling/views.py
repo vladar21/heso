@@ -10,11 +10,13 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.db import transaction
+from django.contrib.auth.decorators import login_required
 
 
 # Local application imports
 from .models import Lesson, Material
-from users.models import Teacher, Student
+# from users.models import Teacher, Student
+from users.models import User
 from .forms import EnglishClassForm, ScheduleForm
 from .models import EnglishClass, Schedule
 
@@ -23,14 +25,15 @@ def schedule(request):
     # Fetch all lessons with related class, teacher, and students data
     lessons = Lesson.objects.prefetch_related('english_class', 'english_class__teacher', 'english_class__students').all()
     lessons_data = []
+    teachers = list(User.objects.filter(is_teacher=True).values('id', 'username'))
 
     # Prepare lessons data for FullCalendar
     for lesson in lessons:
         total_lessons = lesson.english_class.lessons.count()
         lesson_number = list(lesson.english_class.lessons.order_by('start_time')).index(lesson) + 1
         # teachers = Teacher.objects.filter(taught_classes__lessons=lesson)
-        teachers = Teacher.objects.all()
-        students = Student.objects.filter(enrolled_classes__lessons=lesson)
+        teacher_id = lesson.english_class.teacher.id if lesson.english_class.teacher else None
+        student_usernames_ids = list(lesson.english_class.students.values('id', 'username'))
         materials = Material.objects.filter(lessons=lesson)
 
         lessons_data.append({
@@ -44,9 +47,9 @@ def schedule(request):
                 'description': lesson.description,
                 'meeting_link': lesson.meeting_link,
                 'location': lesson.location,
-                'teacher_id': lesson.english_class.teacher.id,
-                'teachers': list(teachers.values('id', 'username')),
-                'students': list(students.values('id', 'username')),
+                'teacher_id': teacher_id,
+                'teachers': teachers,
+                'students': student_usernames_ids,
                 'materials': list(materials.values('id', 'title')),
             }
         })
@@ -55,6 +58,7 @@ def schedule(request):
     return render(request, 'scheduling/schedule.html', {'lessons_list': json.dumps(lessons_data)})
 
 
+@login_required
 @csrf_exempt
 @require_POST
 def update_lesson(request):
@@ -69,6 +73,9 @@ def update_lesson(request):
 
     try:
         lesson = Lesson.objects.select_related('english_class').get(pk=lesson_id)
+
+        if not (request.user.is_superuser or request.user == lesson.english_class.teacher):
+            return JsonResponse({'status': 'error', 'message': 'You do not have permission to update this lesson.'}, status=403)
         
         with transaction.atomic():
             # Update lesson fields if they are provided
@@ -87,20 +94,22 @@ def update_lesson(request):
 
             # Update the teacher if provided
             if 'teacher' in data:
+                teacher_id = data['teacher']
                 try:
-                    teacher = Teacher.objects.get(pk=data['teacher'])
+                    teacher = User.objects.filter(pk=teacher_id, is_teacher=True).first()
                     lesson.english_class.teacher = teacher
                     lesson.english_class.save()
                     total_lessons = lesson.english_class.lessons.count()
                     lesson_number = list(lesson.english_class.lessons.order_by('start_time')).index(lesson) + 1
                     lesson.title = f"{lesson.english_class.title} ({lesson_number}/{total_lessons}) | {teacher.username}"
-                except Teacher.DoesNotExist:
+                except User.DoesNotExist:
                     return JsonResponse({'status': 'error', 'message': 'Teacher not found.'}, status=404)
 
             # Update students if provided
             if 'students' in data:
                 student_ids = data['students']
-                lesson.english_class.students.set(Student.objects.filter(id__in=student_ids))
+                students = User.objects.filter(id__in=student_ids, is_student=True)
+                lesson.english_class.students.set(students)
 
             # Update materials if provided
             if 'materials' in data:
@@ -125,8 +134,8 @@ def update_lesson(request):
 
             total_lessons = updated_lesson.english_class.lessons.count()
             lesson_number = list(updated_lesson.english_class.lessons.order_by('start_time')).index(updated_lesson) + 1
-            teachers = Teacher.objects.all()
-            students = Student.objects.filter(enrolled_classes__lessons=updated_lesson)
+            teachers = User.objects.filter(is_teacher=True)
+            students = User.objects.filter(is_student=True, enrolled_classes__lessons=updated_lesson)
             materials = Material.objects.filter(lessons=updated_lesson)
 
             updated_lesson_data = {

@@ -18,17 +18,17 @@ class User(AbstractUser):
         return self.username
 
 
-class Teacher(User):
-    department = models.CharField(max_length=100)
-    bio = models.TextField(blank=True, null=True)
+# class Teacher(User):
+#     department = models.CharField(max_length=100)
+#     bio = models.TextField(blank=True, null=True)
 
-    class Meta:
-        verbose_name = "Teacher"
+#     class Meta:
+#         verbose_name = "Teacher"
 
 
-class Student(User):
-    enrollment_date = models.DateField()
-    major = models.CharField(max_length=100, blank=True, null=True)
+# class Student(User):
+#     enrollment_date = models.DateField()
+#     major = models.CharField(max_length=100, blank=True, null=True)
 
-    class Meta:
-        verbose_name = "Student"
+#     class Meta:
+#         verbose_name = "Student"
