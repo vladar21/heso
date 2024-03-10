@@ -1,8 +1,8 @@
-# users/views.py
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm
-from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.views import LoginView as BaseLoginView
+from django.contrib.auth import logout
 
 
 def register(request):
@@ -23,7 +23,14 @@ def home(request):
 
 
 def custom_logout(request):
-    if request.method == "POST":
-        logout(request)
-        return redirect('login')
-    return render(request, 'users/logout.html')
+    logout(request)
+    messages.info(request, 'You have successfully logged out.')
+    return redirect('login')
+
+
+class LoginView(BaseLoginView):
+    template_name = 'users/login.html'
+
+    def form_valid(self, form):
+        messages.success(self.request, 'You have successfully logged in.')
+        return super().form_valid(form)
