@@ -31,7 +31,7 @@
                     <li class="nav-item {% if current_path == '/classes/list/' %}active{% endif %}">
                         <a class="nav-link" href="{% url 'english_class_list' %}">Classes</a>
                     </li>                    
-                    <li class="nav-item {% if current_path == '/classes/' %}active{% endif %}">
+                    <li class="nav-item {% if current_path == '/schedule/' or current_path == '/' %}active{% endif %}">
                         <a class="nav-link" href="{% url 'schedule' %}">Lessons</a>
                     </li>
                     <li class="nav-item {% if current_path == '/users/logout/' %}active{% endif %}">
