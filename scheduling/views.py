@@ -1,7 +1,9 @@
+# scheduling/views.py
 # Standard library imports
 import json
 
 # Third-party imports (Django is considered a third-party library)
+from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -10,7 +12,7 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.db import transaction
-
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 
 
@@ -217,16 +219,22 @@ def update_lesson(request):
         return JsonResponse({'status': 'error', 'message': f'Unexpected error: {str(e)}'}, status=400)
 
 
+@login_required
 def create_english_class(request):
+    if not (request.user.is_superuser or request.user.is_teacher):
+        messages.error(request, "You do not have permission to create a class.")
+        return redirect('english_class_list')
+    
     if request.method == 'POST':
         class_form = EnglishClassForm(request.POST)
         schedule_form = ScheduleForm(request.POST)
         if class_form.is_valid() and schedule_form.is_valid():
             new_class = class_form.save()
             new_schedule = schedule_form.save(commit=False)
-            new_schedule.english_class = new_class  # Связываем расписание с только что созданным классом
+            new_schedule.english_class = new_class
             new_schedule.save()
-            return redirect('english_class_list')  # Убедитесь, что это правильный путь куда вы хотите перенаправить пользователя
+            messages.success(request, "Class created successfully.")
+            return redirect('english_class_list')
     else:
         class_form = EnglishClassForm()
         schedule_form = ScheduleForm()
@@ -238,9 +246,14 @@ def create_english_class(request):
     return render(request, 'scheduling/create_english_class.html', context)
 
 
+@login_required
 def update_english_class(request, pk):
     english_class = get_object_or_404(EnglishClass, pk=pk)
-    schedule, created = Schedule.objects.get_or_create(english_class=english_class)  # Создаем или получаем расписание, связанное с классом
+    schedule, created = Schedule.objects.get_or_create(english_class=english_class)
+
+    if not (request.user.is_superuser or request.user == english_class.teacher):
+        messages.error(request, "You do not have permission to update this class.")
+        return redirect('english_class_list')
     
     if request.method == 'POST':
         class_form = EnglishClassForm(request.POST, instance=english_class)
@@ -249,30 +262,46 @@ def update_english_class(request, pk):
         if class_form.is_valid() and schedule_form.is_valid():
             class_form.save()
             schedule_form.save()
+
+            messages.success(request, "Class updated successfully.")
             
             return redirect('english_class_list')
     else:
         class_form = EnglishClassForm(instance=english_class)
         schedule_form = ScheduleForm(instance=schedule)
     
-    # Создаем контекст для передачи в шаблон
     context = {
         'class_form': class_form,
         'schedule_form': schedule_form,
-        'english_class': english_class  # Если нужно отобразить дополнительную информацию об английском классе
+        'english_class': english_class  
     }
-    # Передаем контекст в шаблон
+
     return render(request, 'scheduling/update_english_class.html', context)
 
 
+@login_required
 def english_class_list(request):
-    schedules = Schedule.objects.all()
-    return render(request, 'scheduling/english_class_list.html', {'schedules': schedules})
+    if request.user.is_superuser or request.user.is_teacher:
+        classes = EnglishClass.objects.all() if request.user.is_superuser else EnglishClass.objects.filter(teacher=request.user)
+        return render(request, 'scheduling/english_class_list.html', {'classes': classes})
+    else:
+        messages.error(request, 'You do not have permission to view this page.')
+        return redirect('scheduling/classes/')
 
 
+@login_required
 def delete_english_class(request, pk):
-    schedule = get_object_or_404(Schedule, english_class__pk=pk)  # Используем double underscore для доступа к связанному EnglishClass по pk
-    if request.method == 'POST':
-        schedule.delete()  # Удаление schedule автоматически удалит связанный EnglishClass, если установлен on_delete=models.CASCADE
+    schedule = get_object_or_404(Schedule, english_class__pk=pk)
+
+    if not (request.user.is_superuser or request.user == english_class.teacher):
+        messages.error(request, "You do not have permission to delete this class.")
         return redirect('english_class_list')
+    
+    if request.method == 'POST':
+        schedule.delete()
+
+        messages.success(request, "Class deleted successfully.")
+
+        return redirect('english_class_list')
+    
     return render(request, 'scheduling/delete_english_class.html', {'english_class': schedule.english_class})
