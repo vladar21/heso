@@ -73,13 +73,6 @@ create_group_with_permissions('Students', {
     'schedule': ['view'],
 })
 
-create_group_with_permissions('Guest', {
-    'englishclass': ['view'],
-    'lesson': ['view'],
-    'material': ['view'],
-    'schedule': ['view'],
-})
-
 # Setup User model
 User = get_user_model()
 
