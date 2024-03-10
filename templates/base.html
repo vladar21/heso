@@ -36,6 +36,11 @@
                     </li>
                     <li class="nav-item {% if current_path == '/users/logout/' %}active{% endif %}">
                         <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <span class="navbar-text">
+                            | {{ user.get_full_name|default:user.username }} works
+                        </span>
                     </li>                    
                     {% else %}
                     <li class="nav-item {% if current_path == '/users/login/' %}active{% endif %}">
