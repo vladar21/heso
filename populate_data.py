@@ -1,9 +1,84 @@
 from django.contrib.auth import get_user_model
-from users.models import Teacher, Student
 from scheduling.models import EnglishClass, Lesson, Schedule, Material
+from django.utils import timezone
 from django.utils.timezone import make_aware
 import random
 import datetime
+
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+
+
+def create_users():
+    # Creating two teachers
+    teacher1 = User.objects.create_user(
+        username='teacher1',
+        email='teacher1@example.com',
+        password='password123',
+        is_teacher=True,
+        is_student=False
+    )
+    teacher2 = User.objects.create_user(
+        username='teacher2',
+        email='teacher2@example.com',
+        password='password123',
+        is_teacher=True,
+        is_student=False
+    )
+    
+    # Creating students with a loop
+    students = []
+    for i in range(1, 16):
+        student = User.objects.create_user(
+            username=f'student{i}',
+            email=f'student{i}@example.com',
+            password='password123',
+            is_teacher=False,
+            is_student=True,
+            enrollment_date=timezone.now().date()  # Assuming every student enrolls on the day this script is run
+        )
+        students.append(student)
+    
+    return teacher1, teacher2, students
+
+
+def create_group_with_permissions(group_name, models_permissions):
+    group, created = Group.objects.get_or_create(name=group_name)
+    permissions_to_add = []
+
+    for model, perms in models_permissions.items():
+        content_type = ContentType.objects.get(app_label='scheduling', model=model)
+        for perm in perms:
+            codename = f'{perm}_{model}'
+            permission, created = Permission.objects.get_or_create(
+                codename=codename,
+                defaults={'name': f'Can {perm} {model}', 'content_type': content_type}
+            )
+            permissions_to_add.append(permission)
+
+    group.permissions.set(permissions_to_add)
+
+
+create_group_with_permissions('Teachers', {
+    'englishclass': ['add', 'change', 'delete', 'view'],
+    'lesson': ['add', 'change', 'delete', 'view'],
+    'material': ['add', 'change', 'delete', 'view'],
+    'schedule': ['add', 'change', 'delete', 'view'],
+})
+
+create_group_with_permissions('Students', {
+    'englishclass': ['view'],
+    'lesson': ['view'],
+    'material': ['view'],
+    'schedule': ['view'],
+})
+
+create_group_with_permissions('Guest', {
+    'englishclass': ['view'],
+    'lesson': ['view'],
+    'material': ['view'],
+    'schedule': ['view'],
+})
 
 # Setup User model
 User = get_user_model()
@@ -38,7 +113,7 @@ def create_materials_for_lesson(lesson):
             # content=None,  Assuming content is uploaded separately or not applicable
         )
         # Assuming Material model has a many-to-many field with EnglishClass named 'english_classes'
-        material.english_class.add(lesson.english_class)
+        # material.english_class.add(lesson.english_class)
         # If the lessons field is a ManyToMany field in Material model to associate with Lesson
         material.lessons.add(lesson)
 
@@ -69,14 +144,6 @@ def create_lessons_for_class(english_class, schedule, lesson_titles):
             current_date += datetime.timedelta(random.choice(range(2, 4)))  # Schedule next lesson 2-3 days apart
         else:
             current_date += datetime.timedelta(days=1)  # Skip to next day if Sunday
-
-
-# Create users, teachers, and students
-def create_users():
-    teacher1 = Teacher.objects.create_user(username='teacher1', email='teacher1@example.com', password='password123', is_teacher=True)
-    teacher2 = Teacher.objects.create_user(username='teacher2', email='teacher2@example.com', password='password123', is_teacher=True)
-    students = [Student.objects.create_user(username=f'student{i}', email=f'student{i}@example.com', password='password123', is_student=True, enrollment_date=datetime.date.today()) for i in range(1, 16)]
-    return teacher1, teacher2, students
 
 
 teacher1, teacher2, students = create_users()
