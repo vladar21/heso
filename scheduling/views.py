@@ -21,6 +21,10 @@ from .forms import EnglishClassForm, ScheduleForm
 from .models import EnglishClass, Schedule
 
 
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+
 def schedule(request):
     # Fetch all lessons with related class, teacher, and students data
     lessons = Lesson.objects.prefetch_related('english_class', 'english_class__teacher', 'english_class__students').all()
@@ -58,10 +62,12 @@ def schedule(request):
     return render(request, 'scheduling/schedule.html', {'lessons_list': json.dumps(lessons_data)})
 
 
-@login_required
 @csrf_exempt
 @require_POST
 def update_lesson(request):
+    if not request.user.is_authenticated and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'status': 'error', 'message': 'Unauthorized'}, status=403)
+    
     if request.content_type == 'application/json':
         data = json.loads(request.body.decode('utf-8'))
         lesson_id = data.get('id')

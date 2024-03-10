@@ -67,7 +67,7 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                  return response.json().then(data => Promise.reject(new Error(data.message)));
                 }
                 return response.json();
             })
@@ -75,13 +75,13 @@
                 if (data.status == 'error') {
                     // Revert the event back to its original position
                     info.revert();
-                    console.error('Error:', data.message);
+                    showMessage('error', data.message);
                 } else {
-                    console.log('Success:', data.message);
+                    showMessage('success', data.message);
                 }
             })
             .catch((error) => {
-                console.error('Error:', error);
+                showMessage('error', error.message);
                 // Revert the event back to its original position
                 info.revert();
             });
@@ -278,7 +278,7 @@
             showMessage('error', data.message);
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => showMessage('error', error));
   }
 
   function handleLocationChange() {

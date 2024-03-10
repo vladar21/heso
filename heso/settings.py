@@ -134,7 +134,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    # Другие пути
 ]
 
 # Default primary key field type
@@ -146,3 +145,4 @@ AUTH_USER_MODEL = 'users.User'
 
 LOGIN_REDIRECT_URL = '/schedule'
 LOGOUT_REDIRECT_URL = '/users/login/'
+LOGIN_URL = '/users/login/'
