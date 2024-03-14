@@ -167,7 +167,7 @@ In the development of HESO, user stories are used to capture specific functional
 ## Technologies Used
 - **Backend**: Django 4.2.9
 - **Frontend**: Bootstrap 4.6.2, jQuery 3.5.1, FullCalendar 6.1.10
-- **Database**: SQLite (development), PostgreSQL (production)
+- **Database**: PostgreSQL 13.9
 - **Version Control**: Git, GitHub
 
 ## Agile Development Plan
@@ -228,6 +228,13 @@ Each sprint in this schedule is a focused development cycle that addresses speci
 - Guidelines on how administrators, teachers, and students interact with the system.
 
 ## Testing
+- For test sending mails feature in project using mailtrap.io service. Please, use credentials below to look ones:
+ ```bash
+ mailtrap link: https://mailtrap.io/inboxes/2689731/messages/4092718424
+ mailtrap login: vlad.rastvorov@aol.com
+ mailtrap password: :8xt:XP4fWr.mwe
+ ```
+
 - Outline of testing strategies for ensuring system functionality and reliability.
 
 ## Bugs
