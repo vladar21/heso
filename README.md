@@ -1,7 +1,9 @@
 # HESO: Home English School Online – Online Class Schedule Service
 
+[View the live project - Click here.](https://heso-cba8b8a64704.herokuapp.com/)
+
 ## Introduction
-HESO is a streamlined online service designed for managing class schedules in small-scale English language schools. It features an admin section where students and teachers can interact with the class schedule, integrated seamlessly with Google Calendar API.
+HESO is a streamlined online service designed for managing class schedules in small-scale English language schools. It features an admin section where students and teachers can interact with the class schedule.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -24,7 +26,7 @@ HESO is tailored to facilitate the organization and management of class schedule
 
 ## User Roles and Responsibilities
 
-### Admin
+### SuperAdmin
 - Manages user accounts and overall system settings.
 - Oversees scheduling operations and system maintenance.
 
@@ -34,7 +36,6 @@ HESO is tailored to facilitate the organization and management of class schedule
 
 ### Student
 - Views class schedules.
-- Receives updates and notifications on class timings.
 
 ## User Stories
 
@@ -45,27 +46,22 @@ In the development of HESO, user stories are used to capture specific functional
   - **Acceptance Criteria**:
     1. Admin can create, edit, and delete user accounts for teachers and students.
     2. Admin can access and modify system settings including platform features and access controls.
-    3. Admin can oversee and manage class schedules and lesson plans to ensure accuracy and coherence.
-    4. Admin can review and approve educational materials uploaded by teachers to maintain quality standards.
-    5. System security measures are in place to prevent unauthorized access and data breaches.
-    6. Admin can generate reports on user activity, class schedules, and system usage for analysis and improvement.
-    7. Admin can provide support and guidance to users, addressing any system-related queries or issues.
+    3. Admin can CRUD class schedules and lesson plans to ensure accuracy and coherence.
+    4. Admin can CRUD educational materials uploaded by teachers to maintain quality standards.
 
 ### User Story for Teacher
 - **Story**: As a **Teacher**, I can **access and update the class schedule** so that **I can efficiently manage class timings and inform students of any changes**.
   - **Acceptance Criteria**:
-    1. Teacher can view their class schedules.
-    2. Teacher can make modifications to the schedule.
-    3. Any changes made are automatically updated and visible to students.
+    1. Teacher can CRUD their class schedules.
+    2. Any changes made are automatically updated and visible to students.
 
 ### User Story for Student
 - **Story**: As a **Student**, I can **view my class schedule** so that **I can keep track of class timings and any updates to the schedule**.
   - **Acceptance Criteria**:
-    1. Student can access their class schedule.
+    1. Student can access classes schedule.
     2. Schedule updates are immediately visible to the student.
-    3. Student receives notifications for any changes in the schedule.
 
-### User Story for Integration with Google Calendar
+### User Story for Integration with Google Calendar (feature )
 - **Story**: As a **User (Teacher/Student)**, I can **have the class schedule synchronized with Google Calendar** so that **I can receive reminders and view my schedule in a familiar interface**.
   - **Acceptance Criteria**:
     1. Class schedules are automatically synced with Google Calendar.
@@ -160,15 +156,21 @@ In the development of HESO, user stories are used to capture specific functional
 - **Class Schedule Management**: Teachers and students can view and interact with class schedules.
 - **Admin Control**: System administrators can manage user accounts and configure system settings.
 
-## Google Calendar API Integration
-- **Automated Scheduling**: Class schedules are automatically synchronized with Google Calendar, offering a seamless integration for managing class timings.
-- **Real-time Updates**: Teachers and students receive real-time updates and notifications through Google Calendar.
+
+## Future Enhancements
+
+- Google Calendar API Integration:
+
+  **Automated Scheduling**: Class schedules are automatically synchronized with Google Calendar, offering a seamless integration for managing class timings.
+
+  **Real-time Updates**: Teachers and students receive real-time updates and notifications through Google Calendar.
 
 ## Technologies Used
 - **Backend**: Django 4.2.9
 - **Frontend**: Bootstrap 4.6.2, jQuery 3.5.1, FullCalendar 6.1.10
 - **Database**: PostgreSQL 13.9
 - **Version Control**: Git, GitHub
+- **Deployment**: Heroku
 
 ## Agile Development Plan
 
