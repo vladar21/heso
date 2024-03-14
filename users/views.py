@@ -3,14 +3,25 @@ from .forms import UserRegisterForm
 from django.contrib import messages
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth import logout
+from django.core.mail import send_mail
 
 
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
             username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
+
+            # Compose and send the email
+            subject = 'Welcome to HESO!'
+            message = f'Hi {username}, thank you for registering at HESO-site.'
+            from_email = 'noreply@heso.com'
+            recipient_list = [email]
+
+            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
             messages.success(request, f'Account created for {username}!')
             return redirect('login')
     else:
