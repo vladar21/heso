@@ -75,7 +75,7 @@ def lesson_details(request):
         return JsonResponse({'status': 'error', 'message': 'Unauthorized access. Please log in.'}, status=403)
     
     lesson = get_object_or_404(Lesson, pk=lesson_id)
-    if not (request.user.is_superuser or request.user == lesson.english_class.teacher):
+    if not (request.user.is_superuser or request.user == lesson.english_class.teacher or request.user in lesson.english_class.students.all()):
         return JsonResponse({'status': 'error', 'message': 'You do not have permission to view this lesson.'}, status=403)
     
     total_lessons = lesson.english_class.lessons.count()

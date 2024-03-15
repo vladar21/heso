@@ -1,3 +1,5 @@
+# scheduling/models.py
+
 import hashlib
 from django.db import models
 from django.conf import settings

@@ -1,4 +1,4 @@
-# settings_test.py
+# heso/settings_test.py
 
 from .settings import *
 
