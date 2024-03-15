@@ -230,6 +230,9 @@ Each sprint in this schedule is a focused development cycle that addresses speci
 - Guidelines on how administrators, teachers, and students interact with the system.
 
 ## Testing
+
+### Send emails
+
 - For test sending mails feature in project using mailtrap.io service. Please, use credentials below to look ones:
  ```bash
  mailtrap link: https://mailtrap.io/inboxes/2689731/messages/4092718424
@@ -237,7 +240,36 @@ Each sprint in this schedule is a focused development cycle that addresses speci
  mailtrap password: :8xt:XP4fWr.mwe
  ```
 
-- Outline of testing strategies for ensuring system functionality and reliability.
+### Unit tests for Users App
+
+#### User Registration Form Test
+- `test_form_valid`: Test that the user registration form is valid with correct data.
+- `test_form_invalid`: Test that the user registration form is invalid with incorrect data.
+
+#### User Registration Test
+- `test_registration_page_status_code`: Test that the registration page returns a status code of 200.
+- `test_registration_form`: Test that user registration is successful and an email is sent upon registration.
+
+#### Logout Test
+- `test_logout_redirect`: Test that logout redirects to the login page.
+
+#### Login Test
+- `test_login_page_status_code`: Test that the login page returns a status code of 200.
+- `test_login_form_valid`: Test that login with valid credentials redirects to the expected page.
+
+### Unit tests for Scheduling App
+
+#### Schedule View Tests
+- `test_schedule_view_for_anonymous_user`: Test that the schedule view is accessible to anonymous users.
+- `test_schedule_view_for_student`: Test that the schedule view is accessible to students.
+- `test_english_class_creation_by_teacher`: Test that teachers can create English classes.
+- `test_english_class_creation_by_student`: Test that students are redirected when trying to create English classes.
+- `test_update_english_class_by_teacher`: Test that teachers can update English classes.
+- `test_delete_english_class_by_super_user`: Test that superusers can delete English classes.
+- `test_lesson_details_access_by_teacher`: Test that teachers can access lesson details.
+- `test_lesson_details_access_by_student`: Test that students can access lesson details.
+- `test_lesson_details_access_by_anonymous_user`: Test that anonymous users cannot access lesson details.
+
 
 ## Bugs
 
