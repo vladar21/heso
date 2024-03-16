@@ -282,11 +282,14 @@ def update_english_class(request, pk):
 @login_required
 def english_class_list(request):
     if request.user.is_superuser or request.user.is_teacher:
-        classes = EnglishClass.objects.all() if request.user.is_superuser else EnglishClass.objects.filter(teacher=request.user)
-        return render(request, 'scheduling/english_class_list.html', {'classes': classes})
+        if request.user.is_superuser:
+            schedules = Schedule.objects.all()
+        else:
+            schedules = Schedule.objects.filter(english_class__teacher=request.user)
+        return render(request, 'scheduling/english_class_list.html', {'schedules': schedules})
     else:
         messages.error(request, 'You do not have permission to view this page.')
-        return redirect('scheduling/classes/')
+        return redirect('schedule')
 
 
 @login_required
