@@ -311,6 +311,21 @@ Each sprint in this schedule is a focused development cycle that addresses speci
 
  <img src="assets/images/fix_not_highlighting_current_menu_item.jpg" width="600" alt="fix not highlighting current menu item">
 
+  ### 3. Incorrect message for unauthorised user actions
+
+- **Description:** Incorrect message when non-authorised user clicks on website items.
+
+  <img src="assets/images/wron_message_for_unautorized_access.jpg" width="600" alt="wrong message for unautorized access">
+
+- **Solution:** Change JavaScript handler for these situations.
+
+ <img src="assets/images/fix_code_wron_message_for_unautorized_access.jpg" width="600" alt="fix code for fix wrong message for unautorized access">
+
+ - **Result:** Correct message (from server).
+
+ <img src="assets/images/fix_result_wron_message_for_unautorized_access.jpg" width="600" alt="correct message when unautorized user click on website items">
+
+
 ## Contributing
 - Information for developers interested in contributing to the HESO project.
 
