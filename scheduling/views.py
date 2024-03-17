@@ -34,7 +34,10 @@ def schedule(request):
     lessons = Lesson.objects.prefetch_related('english_class', 'english_class__teacher', 'english_class__students').all()
     lessons_data = []
     teachers = list(User.objects.filter(is_teacher=True).values('id', 'username'))
-    is_readonly = request.user.is_student
+
+    is_readonly = False
+    if request.user.is_authenticated:
+        is_readonly = getattr(request.user, 'is_student', False)
 
     # Prepare lessons data for FullCalendar
     for lesson in lessons:
