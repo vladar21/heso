@@ -233,7 +233,10 @@ def create_english_class(request):
         class_form = EnglishClassForm(request.POST)
         schedule_form = ScheduleForm(request.POST)
         if class_form.is_valid() and schedule_form.is_valid():
-            new_class = class_form.save()
+            new_class = class_form.save(commit=False)
+            if request.user.is_teacher:
+                class_form.teacher = request.user
+            new_class.save()
             new_schedule = schedule_form.save(commit=False)
             new_schedule.english_class = new_class
             new_schedule.save()
