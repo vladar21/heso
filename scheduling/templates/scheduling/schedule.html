@@ -193,7 +193,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form id="editLessonForm" enctype="multipart/form-data">
+          <form id="editLessonForm" enctype="multipart/form-data" >
             <input type="hidden" id="lessonId" name="lessonId" value="">
             <div class="form-group">
               <label for="lessonTitle">Title</label>
@@ -201,55 +201,55 @@
             </div>
             <div class="form-group">
               <label for="lessonDescription">Description</label>
-              <textarea class="form-control" id="lessonDescription" name="description"></textarea>
+              <textarea class="form-control" id="lessonDescription" name="description" {% if is_readonly %}disabled{% endif %}></textarea>
             </div>
             <div class="form-group">
               <label for="lessonStartTime">Start Time</label>
-              <input type="datetime-local" class="form-control" id="lessonStartTime" name="start_time">
+              <input type="datetime-local" class="form-control" id="lessonStartTime" name="start_time" {% if is_readonly %}disabled{% endif %}>
             </div>
             <div class="form-group">
               <label for="lessonEndTime">End Time</label>
-              <input type="datetime-local" class="form-control" id="lessonEndTime" name="end_time">
+              <input type="datetime-local" class="form-control" id="lessonEndTime" name="end_time" {% if is_readonly %}disabled{% endif %}>
             </div>
             <div class="form-group">
               <label for="lessonLocation">Location</label>
-              <select class="form-control" id="lessonLocation" name="location">
+              <select class="form-control" id="lessonLocation" name="location" {% if is_readonly %}disabled{% endif %}>
                 <option value="on-site">On-site</option>
                 <option value="online">Online</option>
               </select>
             </div>
             <div class="form-group">
               <label for="MeetingLink">Meeting Link</label>
-              <input type="url" class="form-control" id="MeetingLink" name="meeting_link">
+              <input type="url" class="form-control" id="MeetingLink" name="meeting_link" {% if is_readonly %}disabled{% endif %}>
             </div>
             <!-- Additional fields for teacher, students, and materials -->
             <div class="form-group">
               <label for="lessonTeacher">Teacher</label>
-              <select class="form-control" id="lessonTeacher" name="teacher">
+              <select class="form-control" id="lessonTeacher" name="teacher" {% if is_readonly %}disabled{% endif %}>
                 <!-- Dynamically populate teachers -->
               </select>
             </div>
             <div class="form-group">
               <label for="lessonStudents">Students</label>
-              <select multiple class="form-control" id="lessonStudents" name="students">
+              <select multiple class="form-control" id="lessonStudents" name="students" {% if is_readonly %}disabled{% endif %}>
                 <!-- Dynamically populate students -->
               </select>
             </div>
             <div class="form-group">
               <label for="lessonMaterials">Materials</label>
-              <select multiple class="form-control" id="lessonMaterials" name="materials">
+              <select multiple class="form-control" id="lessonMaterials" name="materials" {% if is_readonly %}disabled{% endif %}>
                 <!-- Dynamically populate materials -->
               </select>
             </div>
             <div class="form-group">
               <label for="newMaterials">Upload New Materials</label>
-              <input type="file" class="form-control-file" id="newMaterials" name="new_materials" multiple>
+              <input type="file" class="form-control-file" id="newMaterials" name="new_materials" multiple {% if is_readonly %}disabled{% endif %}>
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="saveLessonDetails()">Save changes</button>
+          <button type="button" class="btn btn-primary" onclick="saveLessonDetails()"  {% if is_readonly %}disabled{% endif %}>Save changes</button>
         </div>
       </div>
     </div>

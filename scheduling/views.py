@@ -1,4 +1,5 @@
 # scheduling/views.py
+
 # Standard library imports
 import json
 
@@ -12,7 +13,7 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.db import transaction
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.http import require_http_methods
 
 
@@ -33,6 +34,7 @@ def schedule(request):
     lessons = Lesson.objects.prefetch_related('english_class', 'english_class__teacher', 'english_class__students').all()
     lessons_data = []
     teachers = list(User.objects.filter(is_teacher=True).values('id', 'username'))
+    is_readonly = request.user.is_student
 
     # Prepare lessons data for FullCalendar
     for lesson in lessons:
@@ -62,7 +64,7 @@ def schedule(request):
         })
 
     # Render the schedule page with lessons data
-    return render(request, 'scheduling/schedule.html', {'lessons_list': json.dumps(lessons_data)})
+    return render(request, 'scheduling/schedule.html', {'lessons_list': json.dumps(lessons_data), 'is_readonly': is_readonly})
 
 
 @csrf_exempt
@@ -75,6 +77,7 @@ def lesson_details(request):
         return JsonResponse({'status': 'error', 'message': 'Unauthorized access. Please log in.'}, status=403)
     
     lesson = get_object_or_404(Lesson, pk=lesson_id)
+
     if not (request.user.is_superuser or request.user == lesson.english_class.teacher or request.user in lesson.english_class.students.all()):
         return JsonResponse({'status': 'error', 'message': 'You do not have permission to view this lesson.'}, status=403)
     
@@ -118,8 +121,6 @@ def update_lesson(request):
     else:
         data = request.POST
         lesson_id = data['lessonId']
-
-    print(data)  # Выводим полученные данные для проверки
 
     try:
         lesson = Lesson.objects.select_related('english_class').get(pk=lesson_id)
@@ -296,7 +297,7 @@ def english_class_list(request):
 def delete_english_class(request, pk):
     schedule = get_object_or_404(Schedule, english_class__pk=pk)
 
-    if not (request.user.is_superuser or request.user == english_class.teacher):
+    if not (request.user.is_superuser or request.user == schedule.teacher):
         messages.error(request, "You do not have permission to delete this class.")
         return redirect('english_class_list')
     
