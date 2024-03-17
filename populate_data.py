@@ -5,9 +5,6 @@ from django.utils.timezone import make_aware
 import random
 import datetime
 
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
-
 
 def create_users():
     # Creating two teachers
@@ -41,37 +38,6 @@ def create_users():
     
     return teacher1, teacher2, students
 
-
-def create_group_with_permissions(group_name, models_permissions):
-    group, created = Group.objects.get_or_create(name=group_name)
-    permissions_to_add = []
-
-    for model, perms in models_permissions.items():
-        content_type = ContentType.objects.get(app_label='scheduling', model=model)
-        for perm in perms:
-            codename = f'{perm}_{model}'
-            permission, created = Permission.objects.get_or_create(
-                codename=codename,
-                defaults={'name': f'Can {perm} {model}', 'content_type': content_type}
-            )
-            permissions_to_add.append(permission)
-
-    group.permissions.set(permissions_to_add)
-
-
-create_group_with_permissions('Teachers', {
-    'englishclass': ['add', 'change', 'delete', 'view'],
-    'lesson': ['add', 'change', 'delete', 'view'],
-    'material': ['add', 'change', 'delete', 'view'],
-    'schedule': ['add', 'change', 'delete', 'view'],
-})
-
-create_group_with_permissions('Students', {
-    'englishclass': ['view'],
-    'lesson': ['view'],
-    'material': ['view'],
-    'schedule': ['view'],
-})
 
 # Setup User model
 User = get_user_model()
@@ -139,6 +105,13 @@ def create_lessons_for_class(english_class, schedule, lesson_titles):
             current_date += datetime.timedelta(days=1)  # Skip to next day if Sunday
 
 
+# create superadmin
+superadmin = User.objects.create_superuser(
+    username='SuperAdmin',
+    email='super@admin.email',
+    password='heso_password'
+)
+# create teachers and students
 teacher1, teacher2, students = create_users()
 
 # Define classes
