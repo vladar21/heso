@@ -10,7 +10,11 @@ def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.is_student = True
+            user.save()
+
+            # Creating welcome email
             username = form.cleaned_data.get('username')
             email = form.cleaned_data.get('email')
 
