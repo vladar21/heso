@@ -1,8 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 
 User = get_user_model()
+
+
+admin.site.unregister(Group)
 
 
 class CustomUserAdmin(BaseUserAdmin):
@@ -28,5 +32,6 @@ class CustomUserAdmin(BaseUserAdmin):
 
 
 CustomUserAdmin.fieldsets = list(filter(lambda x: 'groups' not in x[1]['fields'] and 'user_permissions' not in x[1]['fields'], CustomUserAdmin.fieldsets))
+
 
 admin.site.register(User, CustomUserAdmin)
