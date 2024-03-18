@@ -1,0 +1,41 @@
+<!-- scheduling/templates/scheduling/lessons_list.html -->
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Lessons</h2>
+        <div class="mb-3 d-flex justify-content-end">
+            <a href="{% url 'create_lesson' %}" class="btn btn-success ml-auto"><b>Create Lesson</b></a>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Class</th>
+                    <th>Teacher</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Location</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lesson in lessons %}
+                <tr>
+                    <td>{{ lesson.title }}</td>
+                    <td>{{ lesson.english_class.title }}</td>
+                    <td>{{ lesson.english_class.teacher.username }}</td>
+                    <td>{{ lesson.start_time }}</td>
+                    <td>{{ lesson.end_time }}</td>
+                    <td>{{ lesson.location }}</td>
+                    <td>
+                        <a href="{% url 'update_lesson_view' lesson.pk %}" class="btn btn-primary">Edit</a>
+                        <a href="{% url 'delete_lesson' lesson.pk %}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

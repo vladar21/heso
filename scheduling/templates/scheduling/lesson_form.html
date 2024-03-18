@@ -1,0 +1,44 @@
+<!-- scheduling/templates/scheduling/lesson_form.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% if lesson.id %}Edit Lesson{% else %}Create Lesson{% endif %}</h2>
+    <form method="post" enctype="multipart/form-data" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        {% if is_readonly %}
+            <script>
+                document.querySelectorAll('form input, form select, form textarea').forEach(function(element) {
+                    element.disabled = true;
+                });
+            </script>
+
+            {% if not lesson.id %}
+                <script>
+                    document.querySelectorAll('form #id_students option').forEach(function(option) {
+                        option.remove();
+                    });
+                </script>
+            {% endif %}
+
+            {% if not lesson.id %}
+                <script>
+                    document.querySelectorAll('form #id_materials option').forEach(function(option) {
+                        option.remove();
+                    });
+                </script>
+            {% endif %}
+
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary" {% if is_readonly %} disabled {% endif %}>Save changes</button>
+    </form>
+</div>
+{% endblock content %}
+
+
+
+
+

@@ -15,14 +15,14 @@ from django.utils import timezone
 from django.db import transaction
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.http import require_http_methods
+from django.urls import reverse
 
 
 # Local application imports
-from .models import Lesson, Material
+from .models import Lesson, Material, EnglishClass, Schedule
 # from users.models import Teacher, Student
 from users.models import User
-from .forms import EnglishClassForm, ScheduleForm
-from .models import EnglishClass, Schedule
+from .forms import EnglishClassForm, ScheduleForm, LessonForm
 
 
 def is_ajax(request):
@@ -257,8 +257,11 @@ def create_english_class(request):
 def update_english_class(request, pk):
     english_class = get_object_or_404(EnglishClass, pk=pk)
     schedule, created = Schedule.objects.get_or_create(english_class=english_class)
+    is_readonly = False
+    if request.user.is_authenticated:
+        is_readonly = getattr(request.user, 'is_student', False)
 
-    if not (request.user.is_superuser or request.user == english_class.teacher):
+    if not (request.user.is_superuser or request.user == english_class.teacher or request.user in english_class.students.all()):
         messages.error(request, "You do not have permission to update this class.")
         return redirect('english_class_list')
     
@@ -280,7 +283,8 @@ def update_english_class(request, pk):
     context = {
         'class_form': class_form,
         'schedule_form': schedule_form,
-        'english_class': english_class  
+        'english_class': english_class,
+        'is_readonly': is_readonly
     }
 
     return render(request, 'scheduling/update_english_class.html', context)
@@ -288,11 +292,14 @@ def update_english_class(request, pk):
 
 @login_required
 def english_class_list(request):
-    if request.user.is_superuser or request.user.is_teacher:
+    if request.user.is_superuser or request.user.is_teacher or request.user.is_student:
         if request.user.is_superuser:
             schedules = Schedule.objects.all()
         else:
-            schedules = Schedule.objects.filter(english_class__teacher=request.user)
+            if request.user.is_teacher:
+                schedules = Schedule.objects.filter(english_class__teacher=request.user)
+            else:
+                schedules = Schedule.objects.filter(english_class__students=request.user)
         return render(request, 'scheduling/english_class_list.html', {'schedules': schedules})
     else:
         messages.error(request, 'You do not have permission to view this page.')
@@ -315,3 +322,83 @@ def delete_english_class(request, pk):
         return redirect('english_class_list')
     
     return render(request, 'scheduling/delete_english_class.html', {'english_class': schedule.english_class})
+
+
+@login_required
+def create_lesson(request):
+    if request.method == 'POST':
+        form = LessonForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'The lesson has been successfully created!')
+            return redirect('lessons_list')
+    else:
+        form = LessonForm()
+    return render(request, 'scheduling/lesson_form.html', {'form': form})
+
+
+@login_required
+def lessons_list(request, pk):
+    # First, get the class to make sure it exists
+    english_class = get_object_or_404(EnglishClass, pk=pk)
+    # Then, filter the lessons that are only related to this class
+    lessons = Lesson.objects.filter(english_class=english_class).prefetch_related('english_class__teacher', 'english_class__students')
+    return render(request, 'scheduling/lessons_list.html', {
+        'lessons': lessons,
+        'english_class': english_class  # Optionally, if you need to display class information on the page
+    })
+
+
+@login_required
+def delete_lesson(request, pk):
+    lesson = get_object_or_404(Lesson, pk=pk)
+    
+    if request.user.is_superuser or request.user == lesson.english_class.teacher:
+        lesson.delete()
+        messages.success(request, "Lesson successfully deleted.")
+    else:
+        messages.error(request, "You do not have permission to delete this lesson.")
+    
+    return redirect('lessons_list')
+
+
+@login_required
+def update_lesson_view(request, pk):
+    lesson = get_object_or_404(Lesson, pk=pk)
+    is_readonly = False
+    if request.user.is_authenticated:
+        is_readonly = getattr(request.user, 'is_student', False)
+
+    if not (request.user.is_superuser or request.user == lesson.english_class.teacher or request.user in lesson.english_class.students.all()):
+        messages.error(request, "You do not have permission to update this lesson.")
+        return redirect('lessons_list')
+    else:
+        if request.method == 'POST':
+            form = LessonForm(request.POST, request.FILES, instance=lesson)
+            if form.is_valid():
+                updated_lesson = form.save()
+                form.save_m2m()
+
+                new_materials_files = request.FILES.getlist('new_materials')
+                for file in new_materials_files:
+                    if not Material.objects.filter(title=file.name).exists():
+                        material = Material.objects.create(
+                            title=file.name,
+                            content=file.read(),
+                        )
+                        updated_lesson.materials.add(material)
+                    else:
+                        messages.error(request, f'A material with the name "{file.name}" already exists.')
+
+                if not messages.get_messages(request):
+                    messages.success(request, 'Lesson updated successfully!')
+                    return redirect(reverse('update_lesson_view', kwargs={'pk': pk}))
+        else:
+            form = LessonForm(instance=lesson)
+            if is_readonly:
+                students = lesson.english_class.students.all()
+                materials = Material.objects.filter(lessons=lesson)
+                form.fields['students'].queryset = students
+                form.fields['materials'].queryset = materials
+            
+    return render(request, 'scheduling/lesson_form.html', {'form': form, 'lesson': lesson, 'is_readonly': is_readonly})
