@@ -47,7 +47,7 @@ HESO is tailored to facilitate the organization and management of class schedule
    - When registering a new user, they are automatically assigned the role of Student.
    - The SuperAdmin can change a user's role from Student to Teacher in the administrative panel.
 
-5. **Automatic Student Assignment**:
+5. **Automatic Teacher Assignment**:
    - When a teacher creates a new class, they are automatically assigned as the teacher of that class.
 
 6. **Teacher Rights**:
@@ -55,6 +55,12 @@ HESO is tailored to facilitate the organization and management of class schedule
 
 7. **Student Rights**:
    - Students can only view the schedule of lessons and information about their assigned classes.
+
+8. **Summary**:
+    - SuperAdmin can CRUD all Classes, Lessons, Materials, and has access to admin panel for users managment.
+    - Teachers can CRUD for Classes and Lessons for Classes they teach.
+    - Students can only view Classes and Lessons for Classes they are enrolled in.
+    - If the user does not have any of these roles, they are not allowed to view the Classes list and Lesson's details.
 
 
 ## User Stories
