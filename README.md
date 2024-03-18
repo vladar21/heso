@@ -9,15 +9,14 @@ HESO is a streamlined online service designed for managing class schedules in sm
 ## Table of Contents
 
 - [Overview](#overview)
+- [Usage](#usage)
 - [User Roles and Responsibilities](#user-roles-and-responsibilities)
 - [User Stories](#user-stories)
 - [Model Relationships](#model-relationships)
 - [System Features](#system-features)
-- [Google Calendar API Integration](#google-calendar-api-integration)
 - [Technologies Used](#technologies-used)
 - [Agile Development Plan](#agile-development-plan)
 - [Setup and Installation](#setup-and-installation)
-- [Usage](#usage)
 - [Testing](#testing)
 - [Contributing](#contributing)
 - [License](#license)
@@ -85,8 +84,8 @@ In the development of HESO, user stories are used to capture specific functional
 
 ## System Features
 
-- **Class Schedule Management**: Teachers and students can view and interact with class schedules.
-- **Admin Control**: System administrators can manage user accounts and configure system settings.
+- **Class Schedule Management**: Teachers and students can view and interact with class schedules. Teachers can manage EnglishClass, Lessons and Materials.
+- **Admin Control**: System administrators can manage schedule and user accounts and configure system settings.
 
 
 ## Future Enhancements
@@ -161,6 +160,7 @@ Each sprint in this schedule is a focused development cycle that addresses speci
 
 1. Ensure you have Python 3.x installed.
 2. Install the required dependencies from the `requirements.txt` file by executing the following command in the project's root directory:
+
     ```bash
     pip install -r requirements.txt
     ```
@@ -171,14 +171,16 @@ Configure the connection to the PostgreSQL database in the `settings.py` file of
 
 ### Step 3: Apply Migrations
 
-Apply migrations to create the database tables by running the following command:
+* Apply migrations to create the database tables by running the following command:
+
     ```bash
     python manage.py migrate
     ```
 
 ### Step 4: Run the Server
 
-Start the Django development server by running the following command:
+* Start the Django development server by running the following command:
+
     ```bash
     python manage.py runserver
     ```
@@ -186,27 +188,45 @@ Start the Django development server by running the following command:
 ### Step 5: Populate Data
 
 1. To populate the database with dummy data, execute the `populate_data.py` script using the `python manage.py shell` command:
+
     ```bash
     python manage.py shell
     ```
 2. Run the `populate_data.py` script in the Django interactive shell:
+
     ```python
     exec(open('populate_data.py').read())
     ```
+3. **Note:** Upon initialization, **SuperAdmin** is created with the password:
+
+    ```bash
+     heso_password
+    ```
+
+    Other users, like **teacher1**, **teacher2**, **student1**...**student10** are created, all with the password:
+
+    ```bash
+     password123
+    ```
+
 ### Step 6: Clean Database (Optional)
 
 1. You can clean the database at any time using the following command:
+
     ```bash
     python manage.py flush
     ```
+
 2. After cleaning the database, follow steps 1-2 to set up the database again.
 
 ### Step 7: Start with an Empty Database (Optional)
 
 1. If you prefer not to use the `populate_data.py` script and start with an empty database, you can create a Superuser by running the command:
+
     ```bash
     python manage.py createsuperuser
     ```
+
 2. Follow the prompts to create a superuser, including providing a username, email address, and password.
 
 
@@ -215,6 +235,7 @@ Start the Django development server by running the following command:
 ### Send emails
 
 - For test sending mails feature in project using mailtrap.io service. Please, use credentials below to look ones:
+
  ```bash
  mailtrap link: https://mailtrap.io/inboxes/2689731/messages/4092718424
  mailtrap login: vlad.rastvorov@aol.com
