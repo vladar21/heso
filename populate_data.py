@@ -45,6 +45,8 @@ User = get_user_model()
 # Initialize a variable to keep track of the last schedule start date
 last_start_date = None
 
+existing_materials_titles = []
+
 
 # Generate dates for the schedules with staggered start dates
 def generate_schedule_dates(year=2024, month=3, last_date=None):
@@ -65,16 +67,18 @@ def generate_meeting_link():
 
 def create_materials_for_lesson(lesson):
     material_types = ['book', 'video', 'article']
-    for _ in range(random.randint(1, 3)):  # Each lesson can have between 1 to 3 materials
+    random_type = random.choice(material_types)
+    global existing_materials_titles
+    for _ in range(random.randint(1, 2)):
+        material_title = f"Material for {lesson.title} N{random.randint(1, 100)} : {random_type}"
+        while material_title in existing_materials_titles:
+            material_title = f"Material for {lesson.title} N{random.randint(1, 100)}"
         material = Material.objects.create(
-            title=f"Material for {lesson.title}",
-            type=random.choice(material_types),
-            # content=None,  Assuming content is uploaded separately or not applicable
+            title=material_title,
+            type=random_type,
         )
-        # Assuming Material model has a many-to-many field with EnglishClass named 'english_classes'
-        # material.english_class.add(lesson.english_class)
-        # If the lessons field is a ManyToMany field in Material model to associate with Lesson
         material.lessons.add(lesson)
+        existing_materials_titles.append(material_title)
 
 
 # Function to create lessons for a given class and schedule
@@ -99,7 +103,9 @@ def create_lessons_for_class(english_class, schedule, lesson_titles):
                 meeting_link=meeting_link,
                 status='planned'
             )
-            create_materials_for_lesson(lesson)
+            
+            create_materials_for_lesson(lesson)  # Move this line here, outside the if statement
+            
             current_date += datetime.timedelta(random.choice(range(2, 4)))  # Schedule next lesson 2-3 days apart
         else:
             current_date += datetime.timedelta(days=1)  # Skip to next day if Sunday
