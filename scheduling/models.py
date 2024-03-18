@@ -205,32 +205,3 @@ class Material(models.Model):
     def __str__(self):
         return self.title
 
-
-# GoogleCalendarEvent model for Google Calendar events
-class GoogleCalendarEvent(models.Model):
-    lesson = models.ForeignKey(
-        Lesson,
-        on_delete=models.CASCADE,
-        related_name='google_calendar_events',
-        verbose_name="Lesson"
-    )
-    event_time = models.DateTimeField(verbose_name="Event Time")
-    google_event_id = models.CharField(
-        max_length=255,
-        verbose_name="Google Event ID"
-    )
-
-    class Meta:
-        verbose_name = "Google Calendar Event"
-        verbose_name_plural = "Google Calendar Events"
-    
-    def event_details(self):
-        """Returns detailed information about the calendar event."""
-        return f"Event for lesson: {self.lesson.title} at {self.event_time}"
-
-    def is_past_event(self):
-        """Checks if the event has already occurred."""
-        return self.event_time < timezone.now()
-
-    def __str__(self):
-        return f"Event for {self.lesson.title}"

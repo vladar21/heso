@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import EnglishClass, Schedule, Lesson, Material, GoogleCalendarEvent
+from .models import EnglishClass, Schedule, Lesson, Material
 
 
 # Регистрация модели EnglishClass
@@ -31,11 +31,3 @@ class MaterialAdmin(admin.ModelAdmin):
     list_display = ['title', 'type']
     list_filter = ['type']
     search_fields = ['title']
-
-
-# Регистрация модели GoogleCalendarEvent
-@admin.register(GoogleCalendarEvent)
-class GoogleCalendarEventAdmin(admin.ModelAdmin):
-    list_display = ['lesson', 'event_time', 'google_event_id']
-    list_filter = ['event_time']
-    search_fields = ['google_event_id']
