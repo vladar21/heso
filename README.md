@@ -3,9 +3,11 @@
 [View the live project - Click here.](https://heso-cba8b8a64704.herokuapp.com/)
 
 ## Introduction
+
 HESO is a streamlined online service designed for managing class schedules in small-scale English language schools. It features an admin section where students and teachers can interact with the class schedule.
 
 ## Table of Contents
+
 - [Overview](#overview)
 - [User Roles and Responsibilities](#user-roles-and-responsibilities)
 - [User Stories](#user-stories)
@@ -22,20 +24,39 @@ HESO is a streamlined online service designed for managing class schedules in sm
 - [Acknowledgments](#acknowledgments)
 
 ## Overview
+
 HESO is tailored to facilitate the organization and management of class schedules, enhancing the efficiency of educational processes in online English language schools.
 
-## User Roles and Responsibilities
 
-### SuperAdmin
-- Manages user accounts and overall system settings.
-- Oversees scheduling operations and system maintenance.
+## Usage
 
-### Teacher
-- Accesses and interacts with the class schedule.
-- Coordinates with students regarding class timings.
+1. **Class Schedule Accessibility**:
+   - The class schedule is accessible to all users, whether they are registered or not.
 
-### Student
-- Views class schedules.
+2. **User Roles**:
+   - **SuperAdmin**: Manages the website and user administration.
+   - **Teacher**: Responsible for managing classes and lessons, as well as interacting with students.
+   - **Student**: Can view class schedules.
+
+3. **Access Rights**:
+   - **SuperAdmin** has full access to all classes, lessons, and materials and can make changes to any of them.
+   - **Teacher** has the right to manage the classes and lessons they are assigned to, as well as create new classes.
+   - **Student** can view the general schedule of lessons and only has access to lessons available for their class.
+
+4. **Registration and Role Assignment**:
+   - SuperAdmin is created programmatically during project initialization.
+   - When registering a new user, they are automatically assigned the role of Student.
+   - The SuperAdmin can change a user's role from Student to Teacher in the administrative panel.
+
+5. **Automatic Student Assignment**:
+   - When a teacher creates a new class, they are automatically assigned as the teacher of that class.
+
+6. **Teacher Rights**:
+   - Teachers have full access to manage the classes and lessons they are assigned to, as well as the ability to create new classes.
+
+7. **Student Rights**:
+   - Students can only view the schedule of lessons and information about their assigned classes.
+
 
 ## User Stories
 
@@ -61,98 +82,9 @@ In the development of HESO, user stories are used to capture specific functional
     1. Student can access classes schedule.
     2. Schedule updates are immediately visible to the student.
 
-### User Story for Integration with Google Calendar (feature )
-- **Story**: As a **User (Teacher/Student)**, I can **have the class schedule synchronized with Google Calendar** so that **I can receive reminders and view my schedule in a familiar interface**.
-  - **Acceptance Criteria**:
-    1. Class schedules are automatically synced with Google Calendar.
-    2. Users receive notifications for upcoming classes through Google Calendar.
-    3. Users can view class details within their Google Calendar interface.
-
-## Model Relationships
-
-### User Model (Abstract Base Class)
-```plaintext
-- id (PrimaryKey): Unique identifier for the user.
-- username (CharField): Chosen username for login purposes.
-- email (EmailField): Email address for communication and system notifications.
-- phone_number (CharField): Phone number for communication.
-- first_name (CharField): User's given name for identification within the system.
-- last_name (CharField): User's family name for record-keeping.
-- password (CharField): Hashed password for secure authentication.
-- is_teacher (BooleanField): Flag to indicate if the user has teacher privileges.
-- is_student (BooleanField): Flag to indicate if the user has student privileges.
-```
-
-### Admin Model (Inherits from User)
-```plaintext
-- Inherits all fields from User.
-- Additional Privileges: Full access to the platform for managing settings, users, and system-wide configurations.
-```
-
-### Teacher Model (Inherits from User)
-```plaintext
-- department (CharField): The department to which the teacher belongs.
-- bio (TextField, optional): A brief description of the teacher's background and teaching philosophy.
-```
-
-### Student Model (Inherits from User)
-```plaintext
-- enrollment_date (DateTimeField): The date on which the student was enrolled in the school.
-- major (CharField, optional): The main subject or discipline the student is studying.
-```
-
-### EnglishClass Model
-```plaintext
-- id (PrimaryKey): Unique identifier for the class.
-- title (CharField): The formal name of the class or course.
-- description (TextField): Detailed curriculum and information about the class.
-- teacher (ForeignKey to Teacher): The teacher who conducts the class.
-- schedule (ForeignKey to Schedule): The schedule associated with the class.
-- students (ManyToManyField to Student): The list of students enrolled in the class.
-```
-
-### Schedule Model
-```plaintext
-- id (PrimaryKey): Unique identifier for the schedule.
-- class_id (ForeignKey to EnglishClass): The class to which this schedule belongs.
-- term (CharField): The academic term or semester during which the class is held.
-- start_date (DateField): The starting date of the class's schedule.
-- end_date (DateField): The ending date of the class's schedule.
-```
-
-### Lesson Model
-```plaintext
-- id (PrimaryKey): Unique identifier for the lesson.
-- schedule (ForeignKey to Schedule): The schedule to which this lesson belongs.
-- title (CharField): The title or topic of the individual lesson.
-- description (TextField, optional): Additional details about the lesson's content.
-- start_time (DateTimeField): The scheduled start time of the lesson.
-- end_time (DateTimeField): The scheduled end time of the lesson.
-- google_meet_link (URLField, optional): The URL for the Google Meet session, if applicable.
-```
-
-### Material Model
-```plaintext
-- id (PrimaryKey): Unique identifier for the material.
-- title (CharField): The title or name of the material.
-- type (CharField): The type of material, such as Video, Document, etc.
-- content (TextField/FileField): The actual educational content, which may be a file upload or plain text.
-- english_classes (ManyToManyField to EnglishClass): A collection of classes that this material is associated with.
-- lessons (ManyToManyField to Lesson): A collection of lessons that use this material.
-- students (ManyToManyField to Student): A collection of students who have access to this material.
-- created_at (DateTimeField): The date and time when the material was created.
-- updated_at (DateTimeField): The date and time when the material was last updated.
-```
-
-### GoogleCalendarEvent Model
-```plaintext
-- id (PrimaryKey): Unique identifier for the calendar event.
-- lesson_id (ForeignKey to Lesson): The lesson associated with the calendar event.
-- event_time (DateTimeField): The scheduled time of the event.
-- google_event_id (CharField): The unique identifier for the event in Google Calendar.
-```
 
 ## System Features
+
 - **Class Schedule Management**: Teachers and students can view and interact with class schedules.
 - **Admin Control**: System administrators can manage user accounts and configure system settings.
 
@@ -224,10 +156,59 @@ The development of HESO is structured into sprints, with each sprint targeting s
 Each sprint in this schedule is a focused development cycle that addresses specific components of the project, facilitating clear progression towards the project goals.
 
 ## Setup and Installation
-- Detailed instructions for setting up the development environment and deploying the application.
 
-## Usage
-- Guidelines on how administrators, teachers, and students interact with the system.
+### Step 1: Install Project Dependencies
+
+1. Ensure you have Python 3.x installed.
+2. Install the required dependencies from the `requirements.txt` file by executing the following command in the project's root directory:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+### Step 2: Configure the Database
+
+Configure the connection to the PostgreSQL database in the `settings.py` file of your Django project.
+
+### Step 3: Apply Migrations
+
+Apply migrations to create the database tables by running the following command:
+    ```bash
+    python manage.py migrate
+    ```
+
+### Step 4: Run the Server
+
+Start the Django development server by running the following command:
+    ```bash
+    python manage.py runserver
+    ```
+
+### Step 5: Populate Data
+
+1. To populate the database with dummy data, execute the `populate_data.py` script using the `python manage.py shell` command:
+    ```bash
+    python manage.py shell
+    ```
+2. Run the `populate_data.py` script in the Django interactive shell:
+    ```python
+    exec(open('populate_data.py').read())
+    ```
+### Step 6: Clean Database (Optional)
+
+1. You can clean the database at any time using the following command:
+    ```bash
+    python manage.py flush
+    ```
+2. After cleaning the database, follow steps 1-2 to set up the database again.
+
+### Step 7: Start with an Empty Database (Optional)
+
+1. If you prefer not to use the `populate_data.py` script and start with an empty database, you can create a Superuser by running the command:
+    ```bash
+    python manage.py createsuperuser
+    ```
+2. Follow the prompts to create a superuser, including providing a username, email address, and password.
+
 
 ## Testing
 
