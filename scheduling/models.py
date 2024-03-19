@@ -11,7 +11,8 @@ def generate_hsl_color(unique_identifier, saturation=100, lightness=30):
     Generate a unique HSL color based on a unique identifier.
 
     Args:
-    - unique_identifier: A unique string to base the color on (e.g., class title).
+    - unique_identifier: A unique string to base
+    the color on (e.g., class title).
     - saturation: Saturation percentage of the color (default: 100).
     - lightness: Lightness percentage of the color (default: 30).
 
@@ -42,14 +43,17 @@ def check_color_uniqueness(color, used_colors):
 
 class EnglishClass(models.Model):
     """
-    Represents a classroom or a course, including its title, description, associated color, teacher, and enrolled students.
+    Represents a classroom or a course, including its title, description, associated color,
+    teacher, and enrolled students.
 
     Attributes:
         title (models.CharField): The title of the English class.
         description (models.TextField): A brief description of the class.
         color (models.CharField): A color associated with the class, used for UI distinction.
-        teacher (models.ForeignKey): A reference to the User model, specifically for users marked as teachers.
-        students (models.ManyToManyField): A many-to-many relationship to the User model for users marked as students.
+        teacher (models.ForeignKey): A reference to the User model, specifically for users
+        marked as teachers.
+        students (models.ManyToManyField): A many-to-many relationship to the User model for
+        users marked as students.
     """
     title = models.CharField(max_length=255, verbose_name="Title")
     description = models.TextField(verbose_name="Description")
@@ -137,7 +141,8 @@ class Schedule(models.Model):
 
 class Lesson(models.Model):
     """
-    Represents an individual lesson associated with an EnglishClass, detailing the lesson's timing, location, and status.
+    Represents an individual lesson associated with an EnglishClass, detailing the lesson's timing,
+    location, and status.
 
     Attributes:
         english_class (models.ForeignKey): The English class this lesson belongs to.

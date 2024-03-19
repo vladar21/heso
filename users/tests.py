@@ -195,7 +195,7 @@ class UserRegistrationTest(TestCase):
             "password1": "dfgjndfgj34",
             "password2": "dfgjndfgj34",
         }
-        response = self.client.post(reverse("register"), data=form_data)
+        response = self.client.post(reverse("register"), data=form_data)  # noqa: F841
         self.assertEqual(len(mail.outbox), 1)  # Check that one email was sent
 
     def test_email_content_and_recipients(self):
@@ -206,7 +206,7 @@ class UserRegistrationTest(TestCase):
             "password1": "dfgjndfgj34",
             "password2": "dfgjndfgj34",
         }
-        response = self.client.post(reverse("register"), data=form_data)
+        response = self.client.post(reverse("register"), data=form_data)  # noqa: F841
         self.assertEqual(len(mail.outbox), 1)  # Check that one email was sent
 
         # Check email content
@@ -219,7 +219,8 @@ class UserRegistrationTest(TestCase):
 
 class LoginTest(TestCase):
     """
-    Test cases for user login functionality, including validation of login credentials and redirections.
+    Test cases for user login functionality, including validation of
+    login credentials and redirections.
     """
 
     def setUp(self):
@@ -302,7 +303,8 @@ class AuthenticatedRedirectTest(TestCase):
         self.client.force_login(self.user)
 
     def test_registration_redirect(self):
-        """Test for redirecting authenticated users away from the registration page"""
+        """Test for redirecting authenticated users away
+        from the registration page"""
         response = self.client.get(reverse("register"))
         self.assertRedirects(response, reverse("schedule"))
 

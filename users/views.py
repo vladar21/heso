@@ -18,8 +18,9 @@ def register(request):
     """
     Register a new user as a student.
 
-    Redirects authenticated users to the schedule page. If the form is valid, creates a new user,
-    sends a welcome email, and redirects to the schedule page. Otherwise, renders the registration form again.
+    Redirects authenticated users to the schedule page. If the form is valid,
+    creates a new user, sends a welcome email, and redirects to the schedule page.
+    Otherwise, renders the registration form again.
 
     Args:
         request: HttpRequest object.
@@ -133,7 +134,8 @@ class LoginView(BaseLoginView):
         """
         Redirect authenticated users to the success URL.
 
-        Prevents authenticated users from accessing the login page by redirecting them to the success URL.
+        Prevents authenticated users from accessing the login page
+        by redirecting them to the success URL.
 
         Args:
             *args: Variable length argument list.

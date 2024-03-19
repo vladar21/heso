@@ -14,7 +14,8 @@ class ScheduleViewTests(TestCase):
     """
     Test suite for the scheduling views.
 
-    This class contains tests to ensure that the scheduling app's views work as expected,
+    This class contains tests to ensure that the scheduling app's views
+    work as expected,
     including access control tests (e.g., ensuring that students can't create classes) and
     functionality tests (e.g., creating and updating lessons and classes).
     """
@@ -23,7 +24,7 @@ class ScheduleViewTests(TestCase):
     def setUpTestData(cls):
         """
         Sets up data for the entire TestCase.
-        
+
         This method is called once before all tests in this class.
         It creates users with different roles, an English class, adds a student to the class,
         and creates a schedule for the class.
@@ -77,8 +78,9 @@ class ScheduleViewTests(TestCase):
     def test_english_class_creation_by_student(self):
         """
         Tests that students cannot access the English class creation view.
-        
-        Expected behavior: redirection to the English class list view with an appropriate error message.
+
+        Expected behavior: redirection to the English class list view with
+        an appropriate error message.
         """
         self.client.login(username="student", password="studentpass")
         response = self.client.get(reverse("create_english_class"))
@@ -160,7 +162,7 @@ class ScheduleViewTests(TestCase):
     def test_lesson_details_access_by_anonymous_user(self):
         """
         Tests that anonymous users cannot access lesson details.
-        
+
         Expected behavior: HTTP status code 403 with an appropriate error message.
         """
         lesson = Lesson.objects.create(
@@ -213,7 +215,8 @@ class ScheduleViewTests(TestCase):
     def test_create_english_class_by_teacher(self):
         """
         Ensure teachers can create an English class successfully.
-        Validates that after creating a class, a teacher is redirected to the English class list page,
+        Validates that after creating a class, a teacher is redirected
+        to the English class list page,
         and the count of English classes increases by one.
         """
         self.client.login(username="teacher", password="teacherpass")
@@ -236,7 +239,8 @@ class ScheduleViewTests(TestCase):
         self.assertEqual(
             response.status_code,
             302,
-            f"Expected Redirect to english_class_list, got {response.status_code} instead. Form errors: {response.context['form'].errors if response.context else 'N/A'}",
+            f"Expected Redirect to english_class_list, got {response.status_code} instead. "
+            f"Form errors: {response.context['form'].errors if response.context else 'N/A'}",
         )
 
         classes_count_after = EnglishClass.objects.count()
@@ -267,8 +271,8 @@ class ScheduleViewTests(TestCase):
     def test_create_lesson_by_teacher(self):
         """
         Test the ability of teachers to create lessons for their classes.
-        Confirms that upon successful creation, the teacher is redirected, the total number of lessons increases,
-        and the new lesson's details match the submitted data.
+        Confirms that upon successful creation, the teacher is redirected, the total
+        number of lessons increases, and the new lesson's details match the submitted data.
         """
         self.client.login(username="teacher", password="teacherpass")
         english_class = EnglishClass.objects.create(
@@ -294,7 +298,8 @@ class ScheduleViewTests(TestCase):
     def test_delete_lesson_by_teacher(self):
         """
         Confirm that teachers can delete a lesson from their English class.
-        Validates that after deletion, the lesson is no longer in the database and the teacher is redirected appropriately.
+        Validates that after deletion, the lesson is no longer in the database and the teacher
+        is redirected appropriately.
         """
         self.client.login(username="teacher", password="teacherpass")
         english_class = EnglishClass.objects.create(
@@ -317,7 +322,8 @@ class ScheduleViewTests(TestCase):
     def test_update_lesson_by_teacher(self):
         """
         Check if teachers can update the details of a lesson in their class.
-        Assesses whether the updated lesson reflects the changes and the teacher is redirected after submitting the form.
+        Assesses whether the updated lesson reflects the changes and the teacher is
+        redirected after submitting the form.
         """
         self.client.login(username="teacher", password="teacherpass")
         english_class = EnglishClass.objects.create(

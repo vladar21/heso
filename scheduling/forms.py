@@ -9,9 +9,9 @@ User = get_user_model()
 
 class EnglishClassForm(forms.ModelForm):
     """
-    A form for creating and updating EnglishClass instances. 
-    
-    This form includes fields for specifying the class title, color, description, 
+    A form for creating and updating EnglishClass instances.
+
+    This form includes fields for specifying the class title, color, description,
     the teacher, and the enrolled students. The teacher field is disabled for non-superuser users.
     """
     teacher = forms.ModelChoiceField(
@@ -39,8 +39,8 @@ class EnglishClassForm(forms.ModelForm):
 
 class ScheduleForm(forms.ModelForm):
     """
-    A form for scheduling English classes. 
-    
+    A form for scheduling English classes.
+
     It allows setting the term and the start and end dates for a class schedule. Date fields
     utilize a date picker for ease of use.
     """
@@ -55,11 +55,14 @@ class ScheduleForm(forms.ModelForm):
 
 class LessonForm(forms.ModelForm):
     """
-    A form for creating and updating lessons within an English class. 
-    
-    This form includes fields for the lesson's title, description, timing, location, and meeting link.
-    Additionally, it allows selecting the teacher, enrolled students, existing materials, and uploading new materials.
-    The 'new_materials' field supports multiple file uploads with restrictions on the number and size of files.
+    A form for creating and updating lessons within an English class.
+
+    This form includes fields for the lesson's title, description, timing, location,
+    and meeting link.
+    Additionally, it allows selecting the teacher, enrolled students, existing materials,
+    and uploading new materials.
+    The 'new_materials' field supports multiple file uploads with restrictions on the
+    number and size of files.
     """
     teacher = forms.ModelChoiceField(
         queryset=User.objects.filter(is_teacher=True),
@@ -109,8 +112,8 @@ class LessonForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """
-        Custom initialization to set initial field values based on the lesson instance being edited, 
-        if applicable.
+        Custom initialization to set initial field values based on the
+        lesson instance being edited, if applicable.
         """
         super(LessonForm, self).__init__(*args, **kwargs)
         if self.instance.pk:
@@ -120,11 +123,11 @@ class LessonForm(forms.ModelForm):
 
     def save(self, commit=True):
         """
-        Saves the form's current state to a Lesson instance. 
-        
+        Saves the form's current state to a Lesson instance.
+
         If 'commit' is True, it also saves the Lesson instance to the database. This method ensures
         that many-to-many fields are properly saved using 'save_m2m' method if 'commit' is True.
-        
+
         Returns:
             lesson (Lesson): The lesson instance that has been saved.
         """

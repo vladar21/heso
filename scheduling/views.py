@@ -56,7 +56,9 @@ def schedule(request):
         "english_class", "english_class__teacher", "english_class__students"
     ).all()
     lessons_data = []
-    teachers = list(User.objects.filter(is_teacher=True).values("id", "username"))
+    teachers = list(
+        User.objects.filter(is_teacher=True)
+        .values("id", "username"))
 
     is_readonly = False
     if request.user.is_authenticated:
@@ -77,10 +79,16 @@ def schedule(request):
         )
         materials = Material.objects.filter(lessons=lesson)
 
+        lesson_title = (
+            f"{lesson.english_class.title} "
+            f"({lesson_number}/{total_lessons}) | "
+            f"{lesson.english_class.teacher.username}"
+        )
+
         lessons_data.append(
             {
                 "id": lesson.id,
-                "title": f"{lesson.english_class.title} ({lesson_number}/{total_lessons}) | {lesson.english_class.teacher.username}",
+                "title": lesson_title,
                 "start": lesson.start_time.isoformat(),
                 "end": lesson.end_time.isoformat(),
                 "backgroundColor": lesson.english_class.color,
@@ -150,9 +158,15 @@ def lesson_details(request):
     students = lesson.english_class.students.all()
     materials = lesson.materials.all()
 
+    lesson_title = (
+        f"{lesson.english_class.title} "
+        f"({lesson_number}/{total_lessons}) | "
+        f"{lesson.english_class.teacher.username if lesson.english_class.teacher else 'No teacher'}"
+    )
+
     lesson_data = {
         "id": lesson.id,
-        "title": f"{lesson.english_class.title} ({lesson_number}/{total_lessons}) | {lesson.english_class.teacher.username if lesson.english_class.teacher else 'No teacher'}",
+        "title": lesson_title,
         "start": lesson.start_time.isoformat(),
         "end": lesson.end_time.isoformat(),
         "backgroundColor": lesson.english_class.color,
@@ -259,7 +273,14 @@ def update_lesson(request):
                         )
                         + 1
                     )
-                    lesson.title = f"{lesson.english_class.title} ({lesson_number}/{total_lessons}) | {teacher.username}"
+                    lesson_title_base = (
+                        f"{lesson.english_class.title} "
+                        f"({lesson_number}/{total_lessons})"
+                    )
+                    lesson_title = f"{lesson_title_base} | {teacher.username}"
+
+                    lesson.title = lesson_title
+
                 except User.DoesNotExist:
                     return JsonResponse(
                         {"status": "error", "message": "Teacher not found."}, status=404
@@ -305,9 +326,15 @@ def update_lesson(request):
             )
             materials = Material.objects.filter(lessons=updated_lesson)
 
+            lesson_title_base = (
+                f"{updated_lesson.english_class.title} "
+                f"({lesson_number}/{total_lessons})"
+            )
+            lesson_title = f"{lesson_title_base} | {updated_lesson.english_class.teacher.username}"
+
             updated_lesson_data = {
                 "id": updated_lesson.id,
-                "title": f"{updated_lesson.english_class.title} ({lesson_number}/{total_lessons}) | {updated_lesson.english_class.teacher.username}",
+                "title": lesson_title,
                 "start": updated_lesson.start_time.isoformat(),
                 "end": updated_lesson.end_time.isoformat(),
                 "backgroundColor": updated_lesson.english_class.color,

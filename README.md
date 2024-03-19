@@ -306,11 +306,17 @@ Configure the connection to the PostgreSQL database in the `settings.py` file of
 2. Follow the prompts to create a superuser, including providing a username, email address, and password.
 
 
-## Testing
+## Testing and validation
+
+### Flake8 validation
+
+- The project code has passed the Flake8 validation outcome.
+
+<img src="assets/images/Flake8_Validation_Result.jpg" width="600" alt="Flake8 validation result">
 
 ### Send emails
 
-- For test sending mails feature in project using mailtrap.io service. Please, use credentials below to look ones:
+- For check sending mails feature in project using mailtrap.io service. Please, use credentials below to look ones:
 
  ```bash
  mailtrap link: https://mailtrap.io/inboxes/2689731/messages/4092718424
@@ -318,35 +324,22 @@ Configure the connection to the PostgreSQL database in the `settings.py` file of
  mailtrap password: :8xt:XP4fWr.mwe
  ```
 
-### Unit tests for Users App
+### Unit Tests Suite Overview
 
-#### User Registration Form Test
-- `test_form_valid`: Test that the user registration form is valid with correct data.
-- `test_form_invalid`: Test that the user registration form is invalid with incorrect data.
+- Our test suite ensures the robustness and functionality of user management and scheduling within the application. Tests are categorized by focus areas for clarity.
 
-#### User Registration Test
-- `test_registration_page_status_code`: Test that the registration page returns a status code of 200.
-- `test_registration_form`: Test that user registration is successful and an email is sent upon registration.
+#### User Management Tests
+- `User Registration Validation`: Tests validate the user registration form with correct and incorrect inputs, ensuring only valid data passes.
+- `Duplicate Registration Handling`: Confirms the system prevents users from registering with a username or email that already exists.
+- `Password Strength Enforcement`: Verifies that user registration rejects common and easily guessable passwords to enhance security.
+- `User Logout Process`: Tests the logout functionality, ensuring users are properly logged out and redirected.
+- `Authenticated Redirection`: Verifies that authenticated users are redirected from the login and registration pages to prevent redundant registrations or logins.
 
-#### Logout Test
-- `test_logout_redirect`: Test that logout redirects to the login page.
-
-#### Login Test
-- `test_login_page_status_code`: Test that the login page returns a status code of 200.
-- `test_login_form_valid`: Test that login with valid credentials redirects to the expected page.
-
-### Unit tests for Scheduling App
-
-#### Schedule View Tests
-- `test_schedule_view_for_anonymous_user`: Test that the schedule view is accessible to anonymous users.
-- `test_schedule_view_for_student`: Test that the schedule view is accessible to students.
-- `test_english_class_creation_by_teacher`: Test that teachers can create English classes.
-- `test_english_class_creation_by_student`: Test that students are redirected when trying to create English classes.
-- `test_update_english_class_by_teacher`: Test that teachers can update English classes.
-- `test_delete_english_class_by_super_user`: Test that superusers can delete English classes.
-- `test_lesson_details_access_by_teacher`: Test that teachers can access lesson details.
-- `test_lesson_details_access_by_student`: Test that students can access lesson details.
-- `test_lesson_details_access_by_anonymous_user`: Test that anonymous users cannot access lesson details.
+#### Scheduling System Tests
+- `Access Control`: Ensures that only authorized roles (e.g., teachers, students) can access specific scheduling functionalities like viewing schedules, creating classes, or updating lessons.
+- `Class and Lesson Management`: Tests the creation, updating, and deletion of classes and lessons by authorized users, ensuring the application correctly handles these operations.
+- `Lesson Details Accessibility`: Confirms that lesson details are accessible to users with the appropriate permissions, including teachers and enrolled students.
+- `Scheduling Views`: Validates that the scheduling views render correctly for different user roles, providing the necessary information as expected.
 
 
 ## Bugs
