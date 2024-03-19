@@ -195,28 +195,29 @@ The development of HESO is structured into sprints, with each sprint targeting s
 
 #### Sprint 5 (13/02/2024 - 16/02/2024): Lesson and Material Management
 - Task 11: Develop models and backend functionalities for Lesson and Material.
-- Task 12: Build Admin review and approval system for educational materials.
+- Task 12: Build Admin CRUD system for educational materials.
 
-#### Sprint 6 (17/02/2024 - 20/02/2024): Google Calendar API Integration
-- Task 13: Integrate backend with Google Calendar API for class schedule synchronization.
-- Task 14: Set up syncing of class schedules with Google Calendar.
+#### Sprint 6 (17/02/2024 - 20/02/2024): Frontend Integration and Notification System
+- Task 13: Develop frontend integration for schedule features.
+- Task 14: Implement a notification system for schedule changes and upcoming classes.
 
-#### Sprint 7 (21/02/2024 - 24/02/2024): Frontend Integration and Notification System
-- Task 15: Develop frontend integration for Google Calendar features.
-- Task 16: Implement a notification system for schedule changes and upcoming classes.
+#### Sprint 7 (21/02/2024 - 24/02/2024): Testing and Refinement
+- Task 15: Conduct thorough unit and integration tests.
+- Task 16: Refine user interfaces and functionalities based on feedback.
 
-#### Sprint 8 (25/02/2024 - 28/02/2024): Testing and Refinement
-- Task 17: Conduct thorough unit and integration tests.
-- Task 18: Refine user interfaces and functionalities based on feedback.
+#### Sprint 8 (25/02/2024 - 28/02/2024): Documentation and Final Testing
+- Task 17: Document the code.
+- Task 18: Conduct user acceptance testing and finalize bug fixes.
 
-#### Sprint 9 (29/02/2024 - 03/03/2024): Documentation and Final Testing
-- Task 19: Document the API and user interfaces.
-- Task 20: Conduct user acceptance testing and finalize bug fixes.
+#### Sprint 9 (29/02/2024 - 03/03/2024): Deployment and Launch
+- Task 19: Set up the PostgreSQL production database.
+- Task 20: Configure continuous integration and deployment pipelines.
+- Task 21: Deploy the project on a hosting platform like Heroku.
 
-#### Sprint 10 (04/03/2024 - 07/03/2024): Deployment and Launch
-- Task 21: Set up the PostgreSQL production database.
-- Task 22: Configure continuous integration and deployment pipelines.
-- Task 23: Deploy the project on a hosting platform like Heroku.
+#### Sprint 10 (04/03/2024 - 19/03/2024): Enhancements and Final Touches
+- Task 22: Conduct final security and performance checks.
+- Task 23: Implement last-minute refinements and fixes based on testing.
+- Task 24: Prepare for final release including updating documentation and enhancing user experience.
 
 Each sprint in this schedule is a focused development cycle that addresses specific components of the project, facilitating clear progression towards the project goals.
 
