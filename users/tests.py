@@ -92,12 +92,18 @@ class UserRegistrationTest(TestCase):
 
         # Ensure that no new user object is created
         self.assertEqual(User.objects.count(), 0)
+    
+    def test_logout_verification(self):
+        """Test for verifying that the user is actually logged out after the logout request"""
+        # Create a user and log them in
+        self.client.force_login(User.objects.create_user(username='testuser', password='testpassword123'))
 
+        # Make a request to logout
+        response = self.client.get(reverse('logout'), follow=True)
 
-class LogoutTest(TestCase):
-    def test_logout_redirect(self):
-        response = self.client.get('/users/logout/')
-        self.assertEqual(response.status_code, 302)  # Check redirection to login page
+        # Ensure that the user is redirected to the login page after logout
+        self.assertEqual(response.status_code, 200)  # Check if the user is redirected successfully
+        self.assertTemplateUsed(response, 'users/login.html')  # Ensure that the login page template is used
 
 
 class LoginTest(TestCase):
