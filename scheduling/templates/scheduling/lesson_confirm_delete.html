@@ -1,0 +1,14 @@
+<!-- scheduling/templates/scheduling/lesson_confirm_delete.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Delete Lesson</h2>
+    <p>Are you sure you want to delete the lesson "{{ lesson.title }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="{% url 'lessons_list' class_id=lesson.english_class.id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

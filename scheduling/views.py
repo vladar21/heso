@@ -257,17 +257,21 @@ def create_english_class(request):
 def update_english_class(request, pk):
     english_class = get_object_or_404(EnglishClass, pk=pk)
     schedule, created = Schedule.objects.get_or_create(english_class=english_class)
-    is_readonly = False
-    if request.user.is_authenticated:
-        is_readonly = getattr(request.user, 'is_student', False)
 
-    if not (request.user.is_superuser or request.user == english_class.teacher or request.user in english_class.students.all()):
+    is_teacher = request.user == english_class.teacher
+    is_student = not request.user.is_superuser and not is_teacher
+
+    if not (request.user.is_superuser or is_teacher or request.user in english_class.students.all()):
         messages.error(request, "You do not have permission to update this class.")
         return redirect('english_class_list')
     
     if request.method == 'POST':
-        class_form = EnglishClassForm(request.POST, instance=english_class)
-        schedule_form = ScheduleForm(request.POST, instance=schedule)
+        if not (is_teacher or request.user.is_superuser):
+            messages.error(request, "You do not have permission to update this class.")
+            return redirect('english_class_list')
+
+        class_form = EnglishClassForm(request.POST or None, instance=english_class, user=request.user)
+        schedule_form = ScheduleForm(request.POST or None, instance=schedule)
         
         if class_form.is_valid() and schedule_form.is_valid():
             class_form.save()
@@ -279,12 +283,24 @@ def update_english_class(request, pk):
     else:
         class_form = EnglishClassForm(instance=english_class)
         schedule_form = ScheduleForm(instance=schedule)
+        if is_student:
+            students = english_class.students.all()
+            class_form.fields['students'].queryset = students
     
+        if not (request.user.is_superuser or is_teacher):
+            for field_name, field in class_form.fields.items():
+                class_form.fields[field_name].widget.attrs['disabled'] = 'disabled'
+            for field_name, field in schedule_form.fields.items():
+                schedule_form.fields[field_name].widget.attrs['disabled'] = 'disabled'
+
+    if not request.user.is_superuser:
+        class_form.fields['teacher'].widget.attrs['disabled'] = 'disabled'
+        
     context = {
         'class_form': class_form,
         'schedule_form': schedule_form,
         'english_class': english_class,
-        'is_readonly': is_readonly
+        'is_student': is_student,
     }
 
     return render(request, 'scheduling/update_english_class.html', context)
@@ -310,7 +326,7 @@ def english_class_list(request):
 def delete_english_class(request, pk):
     schedule = get_object_or_404(Schedule, english_class__pk=pk)
 
-    if not (request.user.is_superuser or request.user == schedule.teacher):
+    if not (request.user.is_superuser or request.user == schedule.english_class.teacher):
         messages.error(request, "You do not have permission to delete this class.")
         return redirect('english_class_list')
     
@@ -325,51 +341,87 @@ def delete_english_class(request, pk):
 
 
 @login_required
-def create_lesson(request):
+def create_lesson(request, class_id):
+    english_class = get_object_or_404(EnglishClass, pk=class_id)
+    # Check if user is superuser or teacher of the class
+    if not (request.user.is_superuser or (request.user.is_teacher and request.user == english_class.teacher)):
+        messages.error(request, "You do not have permission to create a lesson.")
+        return redirect('lessons_list', class_id=class_id)
+
     if request.method == 'POST':
         form = LessonForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'The lesson has been successfully created!')
-            return redirect('lessons_list')
+            lesson = form.save(commit=False)
+            lesson.english_class = english_class
+            # Automatically assign user as teacher if they are a teacher
+            if request.user.is_teacher:
+                lesson.teacher = request.user
+            lesson.save()
+            new_materials_files = request.FILES.getlist('new_materials')
+            for file in new_materials_files:
+                if not Material.objects.filter(title=file.name).exists():
+                    material = Material.objects.create(
+                        title=file.name,
+                        content=file.read(),
+                    )
+                    lesson.materials.add(material)
+                else:
+                    messages.error(request, f'A material with the name "{file.name}" already exists.')
+                lesson.save()
+            return redirect('update_lesson_view', pk=lesson.id)
     else:
         form = LessonForm()
-    return render(request, 'scheduling/lesson_form.html', {'form': form})
+        # Auto-fill teacher field with current user if they are a teacher
+        if request.user.is_teacher:
+            form.fields['teacher'].initial = request.user.id
+            # Disable teacher field to prevent change
+            form.fields['teacher'].widget.attrs['disabled'] = 'disabled'
+        
+        # Set the queryset for the students field to all students
+        form.fields['students'].queryset = User.objects.filter(is_student=True)
+        # Pre-select students who are already associated with this class
+        form.fields['students'].initial = [student.id for student in english_class.students.all()]
+
+    return render(request, 'scheduling/lesson_form.html', {'form': form, 'class_id': class_id})
 
 
 @login_required
-def lessons_list(request, pk):
+def lessons_list(request, class_id):
     # First, get the class to make sure it exists
-    english_class = get_object_or_404(EnglishClass, pk=pk)
+    english_class = get_object_or_404(EnglishClass, pk=class_id)
     # Then, filter the lessons that are only related to this class
     lessons = Lesson.objects.filter(english_class=english_class).prefetch_related('english_class__teacher', 'english_class__students')
     return render(request, 'scheduling/lessons_list.html', {
         'lessons': lessons,
-        'english_class': english_class  # Optionally, if you need to display class information on the page
+        'english_class': english_class
     })
 
 
 @login_required
 def delete_lesson(request, pk):
     lesson = get_object_or_404(Lesson, pk=pk)
-    
-    if request.user.is_superuser or request.user == lesson.english_class.teacher:
-        lesson.delete()
-        messages.success(request, "Lesson successfully deleted.")
-    else:
+    # class_pk = lesson.english_class.pk
+
+    if not (request.user.is_superuser or request.user == lesson.english_class.teacher):
         messages.error(request, "You do not have permission to delete this lesson.")
-    
-    return redirect('lessons_list')
+        # return redirect('lessons_list', pk=class_pk)
+        return redirect('lessons_list', class_id=lesson.english_class.id)
+
+    if request.method == 'POST':
+        lesson.delete()
+        messages.success(request, "Lesson deleted successfully.")
+        # return redirect('lessons_list', pk=class_pk)
+        return redirect('lessons_list', class_id=lesson.english_class.id)
+
+    return render(request, 'scheduling/lesson_confirm_delete.html', {'lesson': lesson})
 
 
 @login_required
 def update_lesson_view(request, pk):
     lesson = get_object_or_404(Lesson, pk=pk)
-    is_readonly = False
-    if request.user.is_authenticated:
-        is_readonly = getattr(request.user, 'is_student', False)
+    is_teacher = request.user == lesson.english_class.teacher
 
-    if not (request.user.is_superuser or request.user == lesson.english_class.teacher or request.user in lesson.english_class.students.all()):
+    if not (request.user.is_superuser or is_teacher or request.user in lesson.english_class.students.all()):
         messages.error(request, "You do not have permission to update this lesson.")
         return redirect('lessons_list')
     else:
@@ -378,6 +430,12 @@ def update_lesson_view(request, pk):
             if form.is_valid():
                 updated_lesson = form.save()
                 form.save_m2m()
+
+                if 'students' in request.POST:
+                    updated_lesson.english_class.students.set(request.POST.getlist('students'))
+                if 'materials' in request.POST:
+                    material_ids = request.POST.getlist('materials')
+                    updated_lesson.materials.set(Material.objects.filter(id__in=material_ids))
 
                 new_materials_files = request.FILES.getlist('new_materials')
                 for file in new_materials_files:
@@ -394,11 +452,19 @@ def update_lesson_view(request, pk):
                     messages.success(request, 'Lesson updated successfully!')
                     return redirect(reverse('update_lesson_view', kwargs={'pk': pk}))
         else:
-            form = LessonForm(instance=lesson)
-            if is_readonly:
+            form = LessonForm(instance=lesson)        
+            if not (request.user.is_superuser or is_teacher):
                 students = lesson.english_class.students.all()
                 materials = Material.objects.filter(lessons=lesson)
                 form.fields['students'].queryset = students
                 form.fields['materials'].queryset = materials
+                form.fields['new_materials'].widget.attrs['disabled'] = 'disabled'
+                for field_name, field in form.fields.items():
+                    form.fields[field_name].widget.attrs['disabled'] = 'disabled'
+
+            if not request.user.is_superuser:
+                form.fields['teacher'].widget.attrs['disabled'] = 'disabled'
             
-    return render(request, 'scheduling/lesson_form.html', {'form': form, 'lesson': lesson, 'is_readonly': is_readonly})
+            is_student = not request.user.is_superuser and not is_teacher
+            
+    return render(request, 'scheduling/lesson_form.html', {'form': form, 'lesson': lesson, 'is_student': is_student})

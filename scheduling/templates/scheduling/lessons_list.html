@@ -5,7 +5,7 @@
     <div class="col-md-12">
         <h2>Lessons</h2>
         <div class="mb-3 d-flex justify-content-end">
-            <a href="{% url 'create_lesson' %}" class="btn btn-success ml-auto"><b>Create Lesson</b></a>
+            <a href="{% url 'create_lesson' class_id=english_class.id %}" class="btn btn-success ml-auto"><b>Create Lesson</b></a>
         </div>
         <table class="table table-striped">
             <thead>
