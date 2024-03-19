@@ -40,8 +40,17 @@ def check_color_uniqueness(color, used_colors):
     return color not in used_colors
 
 
-# The EnglishClass model represents a classroom or course
 class EnglishClass(models.Model):
+    """
+    Represents a classroom or a course, including its title, description, associated color, teacher, and enrolled students.
+
+    Attributes:
+        title (models.CharField): The title of the English class.
+        description (models.TextField): A brief description of the class.
+        color (models.CharField): A color associated with the class, used for UI distinction.
+        teacher (models.ForeignKey): A reference to the User model, specifically for users marked as teachers.
+        students (models.ManyToManyField): A many-to-many relationship to the User model for users marked as students.
+    """
     title = models.CharField(max_length=255, verbose_name="Title")
     description = models.TextField(verbose_name="Description")
     color = models.CharField(max_length=20, default="#FFFFFF")
@@ -89,8 +98,16 @@ class EnglishClass(models.Model):
         return self.title
 
 
-# The Schedule model associates classes with their schedules
 class Schedule(models.Model):
+    """
+    Associates an EnglishClass with a specific schedule, including the term and start/end dates.
+
+    Attributes:
+        english_class (models.ForeignKey): A reference to the associated EnglishClass.
+        term (models.CharField): The term during which this class is scheduled (e.g., Spring 2024).
+        start_date (models.DateField): The start date of the class.
+        end_date (models.DateField): The end date of the class.
+    """
     english_class = models.ForeignKey(
         EnglishClass,
         on_delete=models.CASCADE,
@@ -118,8 +135,20 @@ class Schedule(models.Model):
         return f"{self.english_class.title} Schedule"
 
 
-# Lesson model for individual lessons
 class Lesson(models.Model):
+    """
+    Represents an individual lesson associated with an EnglishClass, detailing the lesson's timing, location, and status.
+
+    Attributes:
+        english_class (models.ForeignKey): The English class this lesson belongs to.
+        title (models.CharField): The title of the lesson.
+        description (models.TextField): A detailed description of the lesson's content.
+        start_time (models.DateTimeField): When the lesson starts.
+        end_time (models.DateTimeField): When the lesson ends.
+        meeting_link (models.URLField): An optional link for online lessons.
+        location (models.CharField): The location of the lesson, either on-site or online.
+        status (models.CharField): The current status of the lesson (planned, completed, cancelled).
+    """
     english_class = models.ForeignKey(
         EnglishClass,
         on_delete=models.CASCADE,
@@ -174,8 +203,16 @@ class Lesson(models.Model):
         return self.title
 
 
-# Material model for training materials
 class Material(models.Model):
+    """
+    Represents educational materials associated with lessons, including type and content.
+
+    Attributes:
+        title (models.CharField): The title of the material.
+        type (models.CharField): The type of material (e.g., book, video, article).
+        content (models.BinaryField): The binary content of the material, suitable for file storage.
+        lessons (models.ManyToManyField): Lessons that utilize this material.
+    """
     title = models.CharField(max_length=255, verbose_name="Title")
     type = models.CharField(max_length=100, verbose_name="Type")
     content = models.BinaryField(blank=True, null=True, verbose_name="Content")
