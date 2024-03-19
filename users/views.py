@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView as BaseLoginView
+from django.contrib.auth.forms import AuthenticationForm
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 
@@ -46,7 +47,12 @@ def custom_logout(request):
 
 class LoginView(BaseLoginView):
     template_name = 'users/login.html'
+    authentication_form = AuthenticationForm  # Ensure correct form is used
 
     def form_valid(self, form):
         messages.success(self.request, 'You have successfully logged in.')
         return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Invalid username or password. Please try again.')
+        return super().form_invalid(form)

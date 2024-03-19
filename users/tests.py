@@ -120,3 +120,21 @@ class LoginTest(TestCase):
             'password': 'testpassword123',
         })
         self.assertEqual(response.status_code, 302)  # Check redirection after login
+    
+    def test_invalid_username(self):
+        """Test that user cannot login with incorrect username"""
+        response = self.client.post(reverse('login'), data={
+            'username': 'invalid_username',
+            'password': 'testpassword123',
+        })
+        self.assertEqual(response.status_code, 200)  # Check that the login page is rendered again
+        self.assertContains(response, 'Please enter a correct username')  # Check for error message
+
+    def test_invalid_password(self):
+        """Test that user cannot login with incorrect password"""
+        response = self.client.post(reverse('login'), data={
+            'username': 'testuser',
+            'password': 'invalid_password',
+        })
+        self.assertEqual(response.status_code, 200)  # Check that the login page is rendered again
+        self.assertContains(response, 'Invalid username or password. Please try again.')  # Check for error message
