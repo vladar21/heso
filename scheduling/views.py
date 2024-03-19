@@ -26,10 +26,31 @@ from .forms import EnglishClassForm, ScheduleForm, LessonForm
 
 
 def is_ajax(request):
+    """
+    Check if the request is an AJAX request.
+
+    Args:
+        request: HttpRequest object.
+
+    Returns:
+        bool: True if the request is an AJAX request, False otherwise.
+    """
     return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
 
 
 def schedule(request):
+    """
+    Display the schedule page with lessons data.
+
+    Fetches all lessons and related data, prepares them for FullCalendar,
+    and renders the schedule page.
+
+    Args:
+        request: HttpRequest object.
+
+    Returns:
+        HttpResponse: Rendered schedule page with lessons data.
+    """
     # Fetch all lessons with related class, teacher, and students data
     lessons = Lesson.objects.prefetch_related(
         "english_class", "english_class__teacher", "english_class__students"
@@ -47,7 +68,7 @@ def schedule(request):
         lesson_number = (
             list(lesson.english_class.lessons.order_by("start_time")).index(lesson) + 1
         )
-        # teachers = Teacher.objects.filter(taught_classes__lessons=lesson)
+
         teacher_id = (
             lesson.english_class.teacher.id if lesson.english_class.teacher else None
         )
@@ -87,6 +108,15 @@ def schedule(request):
 @csrf_exempt
 @require_POST
 def lesson_details(request):
+    """
+    Provide details for a specific lesson via AJAX.
+
+    Args:
+        request: The HttpRequest object, expected to be AJAX with 'lessonId'.
+
+    Returns:
+        JsonResponse with lesson details if found, or error message.
+    """
     data = json.loads(request.body)
     lesson_id = data.get("lessonId")
 
@@ -154,6 +184,17 @@ def lesson_details(request):
 @csrf_exempt
 @require_POST
 def update_lesson(request):
+    """
+    Update a specific lesson's details.
+
+    Handles AJAX POST requests to update lesson information in the database.
+
+    Args:
+        request: The HttpRequest object, expected to contain lesson details.
+
+    Returns:
+        JsonResponse indicating success or failure of the update operation.
+    """
     if (
         not request.user.is_authenticated
         and request.headers.get("X-Requested-With") == "XMLHttpRequest"
@@ -310,6 +351,18 @@ def update_lesson(request):
 
 @login_required
 def create_english_class(request):
+    """
+    Create a new English class along with its schedule.
+
+    Handles the form submission for creating a new English class and its associated
+    schedule. Redirects to class list upon success.
+
+    Args:
+        request: The HttpRequest object.
+
+    Returns:
+        HttpResponse object redirecting to the class list or rendering the form.
+    """
     if not (request.user.is_superuser or request.user.is_teacher):
         messages.error(request, "You do not have permission to create a class.")
         return redirect("english_class_list")
@@ -340,6 +393,16 @@ def create_english_class(request):
 
 @login_required
 def update_english_class(request, pk):
+    """
+    Update an existing English class and its schedule.
+
+    Args:
+        request: The HttpRequest object.
+        pk: Primary key of the English class to update.
+
+    Returns:
+        HttpResponse object redirecting to the class list or rendering the form.
+    """
     english_class = get_object_or_404(EnglishClass, pk=pk)
     schedule, created = Schedule.objects.get_or_create(english_class=english_class)
 
@@ -399,6 +462,17 @@ def update_english_class(request, pk):
 
 @login_required
 def english_class_list(request):
+    """
+    Display a list of English classes.
+
+    Shows classes relevant to the current user based on their role (admin, teacher, student).
+
+    Args:
+        request: The HttpRequest object.
+
+    Returns:
+        HttpResponse object with rendered list of classes.
+    """
     if request.user.is_superuser or request.user.is_teacher or request.user.is_student:
         if request.user.is_superuser:
             schedules = Schedule.objects.all()
@@ -419,6 +493,16 @@ def english_class_list(request):
 
 @login_required
 def delete_english_class(request, pk):
+    """
+    Delete an English class and its associated schedule.
+
+    Args:
+        request: The HttpRequest object.
+        pk: Primary key of the English class to delete.
+
+    Returns:
+        HttpResponse object redirecting to the class list after deletion.
+    """
     schedule = get_object_or_404(Schedule, english_class__pk=pk)
 
     if not (
@@ -443,6 +527,16 @@ def delete_english_class(request, pk):
 
 @login_required
 def create_lesson(request, class_id):
+    """
+    Create a new lesson for a specific English class.
+
+    Args:
+        request: The HttpRequest object.
+        class_id: The ID of the class for which to create a lesson.
+
+    Returns:
+        HttpResponse object redirecting to the lesson list or rendering the form.
+    """
     english_class = get_object_or_404(EnglishClass, pk=class_id)
     # Check if user is superuser or teacher of the class
     if not (
@@ -500,6 +594,16 @@ def create_lesson(request, class_id):
 
 @login_required
 def lessons_list(request, class_id):
+    """
+    Display a list of lessons for a specific English class.
+
+    Args:
+        request: The HttpRequest object.
+        class_id: The ID of the class whose lessons are to be displayed.
+
+    Returns:
+        HttpResponse object with rendered list of lessons.
+    """
     # First, get the class to make sure it exists
     english_class = get_object_or_404(EnglishClass, pk=class_id)
     # Then, filter the lessons that are only related to this class
@@ -519,6 +623,16 @@ def lessons_list(request, class_id):
 
 @login_required
 def delete_lesson(request, pk):
+    """
+    Delete a specific lesson.
+
+    Args:
+        request: The HttpRequest object.
+        pk: Primary key of the lesson to delete.
+
+    Returns:
+        HttpResponse object redirecting to the lesson list after deletion.
+    """
     lesson = get_object_or_404(Lesson, pk=pk)
     # class_pk = lesson.english_class.pk
 
@@ -538,6 +652,18 @@ def delete_lesson(request, pk):
 
 @login_required
 def update_lesson_view(request, pk):
+    """
+    Update view for a specific lesson.
+
+    Provides a form for updating a lesson and handles the form submission.
+
+    Args:
+        request: The HttpRequest object.
+        pk: Primary key of the lesson to update.
+
+    Returns:
+        HttpResponse object redirecting after successful update or rendering the form.
+    """
     lesson = get_object_or_404(Lesson, pk=pk)
     is_teacher = request.user == lesson.english_class.teacher
     is_student = not request.user.is_superuser and not is_teacher
