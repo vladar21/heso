@@ -73,6 +73,25 @@ class UserRegistrationTest(TestCase):
 
         # Ensure that no new user object is created
         self.assertEqual(User.objects.count(), 0)
+    
+    def test_edge_cases_handling(self):
+        """Test handling of edge cases such as empty form fields or missing required fields"""
+        # Attempt to register a new user with empty form fields
+        response = self.client.post(reverse('register'), data={
+            'username': '',
+            'email': '',
+            'password1': '',
+            'password2': '',
+        })
+
+        # Ensure that the registration form displays errors for missing required fields
+        self.assertFormError(response, 'form', 'username', ['This field is required.'], msg_prefix='form')
+        self.assertFormError(response, 'form', 'email', ['This field is required.'], msg_prefix='form')
+        self.assertFormError(response, 'form', 'password1', ['This field is required.'], msg_prefix='form')
+        self.assertFormError(response, 'form', 'password2', ['This field is required.'], msg_prefix='form')
+
+        # Ensure that no new user object is created
+        self.assertEqual(User.objects.count(), 0)
 
 
 class LogoutTest(TestCase):
