@@ -40,7 +40,7 @@ class ScheduleViewTests(TestCase):
     def test_english_class_creation_by_student(self):
         self.client.login(username='student', password='studentpass')
         response = self.client.get(reverse('create_english_class'))
-        self.assertRedirects(response, reverse('english_class_list'), status_code=302, target_status_code=302)
+        self.assertRedirects(response, reverse('english_class_list'), status_code=302, target_status_code=200)
 
     def test_update_english_class_by_teacher(self):
         self.client.login(username='teacher', password='teacherpass')
@@ -72,3 +72,25 @@ class ScheduleViewTests(TestCase):
         self.assertEqual(response.status_code, 403)
         response_data = json.loads(response.content)
         self.assertEqual(response_data['message'], 'Unauthorized access. Please log in.')
+
+    def test_lesson_update_by_teacher(self):
+        self.client.login(username='teacher', password='teacherpass')
+        lesson = Lesson.objects.create(
+            english_class=self.english_class, 
+            title="Lesson Test", 
+            start_time=timezone.now(), 
+            end_time=timezone.now()
+        )
+        response = self.client.get(reverse('update_lesson_view', kwargs={'pk': lesson.pk}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_lesson_deletion_by_superuser(self):
+        self.client.login(username='admin', password='adminpass')
+        lesson = Lesson.objects.create(
+            english_class=self.english_class, 
+            title="Lesson Deletion Test", 
+            start_time=timezone.now(), 
+            end_time=timezone.now()
+        )
+        response = self.client.get(reverse('delete_lesson', kwargs={'pk': lesson.pk}))
+        self.assertEqual(response.status_code, 200)
