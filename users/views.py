@@ -56,7 +56,6 @@ def register(request):
     return render(request, "users/register.html", {"form": form})
 
 
-@login_required
 def home(request):
     """
     Redirect authenticated users to the schedule page.
