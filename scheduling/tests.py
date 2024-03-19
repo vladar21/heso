@@ -147,3 +147,13 @@ class ScheduleViewTests(TestCase):
         new_lesson = Lesson.objects.latest('id')
         self.assertEqual(new_lesson.title, 'Test Lesson')
         self.assertEqual(new_lesson.english_class, english_class)
+
+    def test_delete_lesson_by_teacher(self):
+        self.client.login(username='teacher', password='teacherpass')
+        english_class = EnglishClass.objects.create(title="Test Class", teacher=self.teacher)
+        lesson_to_delete = Lesson.objects.create(title="Test Lesson", english_class=english_class, start_time="2023-01-01T10:00:00Z", end_time="2023-01-01T12:00:00Z")
+        response = self.client.post(reverse('delete_lesson', kwargs={'pk': lesson_to_delete.pk}))
+        self.assertEqual(response.status_code, 302)
+        
+        with self.assertRaises(Lesson.DoesNotExist):
+            Lesson.objects.get(pk=lesson_to_delete.pk)
