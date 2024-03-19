@@ -3,6 +3,15 @@
 from django.urls import path
 from . import views
 
+"""
+Defines URL patterns for the scheduling application.
+
+The URL patterns include:
+- The main schedule page that displays all lessons in a calendar view.
+- Functionalities for updating, creating, and deleting lessons and English classes.
+- Detailed views for individual lessons and classes, including creation and update forms.
+"""
+
 
 urlpatterns = [
     path("", views.schedule, name="schedule"),
