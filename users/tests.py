@@ -57,6 +57,22 @@ class UserRegistrationTest(TestCase):
 
         # Ensure that no new user object is created
         self.assertEqual(User.objects.count(), 1)
+    
+    def test_weak_password_rejected(self):
+        """Test that weak passwords are rejected during registration"""
+        # Attempt to register a new user with a weak password
+        response = self.client.post(reverse('register'), data={
+            'username': 'testuser',
+            'email': 'testuser@example.com',
+            'password1': 'password',  # Weak password
+            'password2': 'password',
+        })
+
+        # Ensure that the registration form displays an error for weak password
+        self.assertFormError(response, 'form', 'password2', ['This password is too common.'], msg_prefix='form')
+
+        # Ensure that no new user object is created
+        self.assertEqual(User.objects.count(), 0)
 
 
 class LogoutTest(TestCase):
