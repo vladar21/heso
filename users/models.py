@@ -5,7 +5,15 @@ from django.db import models
 
 
 class User(AbstractUser):
-    # Additional fields
+    """
+    Custom user model that extends the default AbstractUser model.
+
+    Attributes:
+        phone_number (models.CharField): Optional field for the user's phone number.
+        is_teacher (models.BooleanField): Flag to indicate whether the user is a teacher.
+        is_student (models.BooleanField): Flag to indicate whether the user is a student.
+        enrollment_date (models.DateField): The date when the user was enrolled.
+    """
     # add a phone number field
     phone_number = models.CharField(max_length=15, blank=True, null=True)
 
