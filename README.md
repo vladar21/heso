@@ -191,7 +191,7 @@ The development of HESO is structured into sprints, with each sprint targeting s
 
 #### Sprint 4 (09/02/2024 - 12/02/2024): Frontend for Class and Schedule Management
 - Task 9: Create frontend interfaces for class schedule viewing and editing.
-- Task 10: Enable Teachers to modify class schedules through the frontend.
+- Task 10: Implement FullCalendar tools for class schedules and lesson plan management.
 
 #### Sprint 5 (13/02/2024 - 16/02/2024): Lesson and Material Management
 - Task 11: Develop models and backend functionalities for Lesson and Material.
