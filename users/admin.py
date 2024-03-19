@@ -11,27 +11,41 @@ admin.site.unregister(Group)
 
 class CustomUserAdmin(BaseUserAdmin):
     fieldsets = (
-        (None, {'fields': ('username', 'password', 'is_teacher', 'is_student')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'email')}),
-        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+        (None, {"fields": ("username", "password", "is_teacher", "is_student")}),
+        ("Personal info", {"fields": ("first_name", "last_name", "email")}),
+        ("Important dates", {"fields": ("last_login", "date_joined")}),
     )
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'password1', 'password2'),
-        }),
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("username", "password1", "password2"),
+            },
+        ),
     )
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_teacher', 'is_student')
-    search_fields = ('username', 'email', 'first_name', 'last_name')
-    ordering = ('username',)
+    list_display = (
+        "username",
+        "email",
+        "first_name",
+        "last_name",
+        "is_teacher",
+        "is_student",
+    )
+    search_fields = ("username", "email", "first_name", "last_name")
+    ordering = ("username",)
 
     class Media:
-        js = (
-            '../static/js/script.js',
-        )
+        js = ("../static/js/script.js",)
 
 
-CustomUserAdmin.fieldsets = list(filter(lambda x: 'groups' not in x[1]['fields'] and 'user_permissions' not in x[1]['fields'], CustomUserAdmin.fieldsets))
+CustomUserAdmin.fieldsets = list(
+    filter(
+        lambda x: "groups" not in x[1]["fields"]
+        and "user_permissions" not in x[1]["fields"],
+        CustomUserAdmin.fieldsets,
+    )
+)
 
 
 admin.site.register(User, CustomUserAdmin)
