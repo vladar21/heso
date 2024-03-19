@@ -398,10 +398,19 @@ Configure the connection to the PostgreSQL database in the `settings.py` file of
 
 
 ## Contributing
+
 - Information for developers interested in contributing to the HESO project.
 
 ## License
-- Details about the licensing terms for the project.
+
+- This project is licensed under the MIT License.
 
 ## Acknowledgments
-- A thank you to all the contributors, testers, and supporters who have helped in the development of HESO.
+
+- My sister - Eleonora Rastvorova - for inspiration.
+
+- My Mentor - Oluwafemi Medale - for continuous helpful feedback.
+
+- My Cohort Facilitator - Marko Tot - for the timely and great advice.
+
+- Tutor support at Code Institute for their support.
