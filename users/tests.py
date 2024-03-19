@@ -10,6 +10,10 @@ from django.contrib.auth import get_user_model
 
 
 class UserRegisterFormTest(TestCase):
+    """
+    Test cases for user registration form validation.
+    """
+
     def test_form_valid(self):
         """Test that the user registration form is valid with correct data"""
         form_data = {
@@ -34,11 +38,22 @@ class UserRegisterFormTest(TestCase):
 
 
 class UserRegistrationTest(TestCase):
+    """
+    Test cases for the user registration process, including successful registration,
+    handling of duplicate registrations, weak passwords, and edge cases.
+    """
+
     def test_registration_page_status_code(self):
+        """
+        Verify that the registration page is accessible and returns HTTP 200 status code.
+        """
         response = self.client.get("/users/register/")
         self.assertEqual(response.status_code, 200)
 
     def test_registration_form(self):
+        """
+        Test successful user registration through the registration form.
+        """
         response = self.client.post(
             reverse("register"),
             data={
@@ -203,16 +218,29 @@ class UserRegistrationTest(TestCase):
 
 
 class LoginTest(TestCase):
+    """
+    Test cases for user login functionality, including validation of login credentials and redirections.
+    """
+
     def setUp(self):
+        """
+        Set up conditions that run before each test case, such as creating a test user.
+        """
         self.user = User.objects.create_user(
             username="testuser", password="testpassword123"
         )
 
     def test_login_page_status_code(self):
+        """
+        Test successful login with valid credentials.
+        """
         response = self.client.get("/users/login/")
         self.assertEqual(response.status_code, 200)
 
     def test_login_form_valid(self):
+        """
+        Ensure that the login page is accessible and returns HTTP 200 status code.
+        """
         response = self.client.post(
             reverse("login"),
             data={
@@ -256,8 +284,15 @@ class LoginTest(TestCase):
 
 
 class AuthenticatedRedirectTest(TestCase):
+    """
+    Test cases for redirecting authenticated users away from the login and registration pages.
+    """
+
     def setUp(self):
-        # Create a user and authenticate it
+        """
+        Set up conditions before each test case, such as creating and authenticating a test user.
+        """
+
         User = get_user_model()
         self.user = User.objects.create_user(
             username="testuser",
