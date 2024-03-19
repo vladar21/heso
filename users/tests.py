@@ -37,6 +37,26 @@ class UserRegistrationTest(TestCase):
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(response.status_code, 302)  # Redirect to login page
         self.assertEqual(len(mail.outbox), 1)  # Check if an email has been sent
+    
+    def test_duplicate_registration(self):
+        """Test that duplicate username or email registration is handled"""
+        # Create a user with a specific username and email
+        User.objects.create_user(username='testuser', email='testuser@example.com', password='testpassword123')
+
+        # Attempt to register a new user with the same username and email
+        response = self.client.post(reverse('register'), data={
+            'username': 'testuser',
+            'email': 'testuser@example.com',
+            'password1': 'testpassword123',
+            'password2': 'testpassword123',
+        })
+
+        # Ensure that the registration form displays errors for duplicate username and email
+        self.assertFormError(response, 'form', 'username', ['A user with that username already exists.'], msg_prefix='form')
+        self.assertFormError(response, 'form', 'email', ['This email address is already in use.'], msg_prefix='form')
+
+        # Ensure that no new user object is created
+        self.assertEqual(User.objects.count(), 1)
 
 
 class LogoutTest(TestCase):

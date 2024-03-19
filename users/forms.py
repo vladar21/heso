@@ -15,6 +15,12 @@ class UserRegisterForm(UserCreationForm):
         if User.objects.filter(username=username).exists():
             raise ValidationError("A user with that username already exists.")
         return username
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email address is already in use.")
+        return email
 
     class Meta:
         model = User
