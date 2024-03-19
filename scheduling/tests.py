@@ -52,6 +52,11 @@ class ScheduleViewTests(TestCase):
         response = self.client.get(reverse('delete_english_class', kwargs={'pk': self.english_class.pk}))
         self.assertEqual(response.status_code, 200)
 
+    def test_delete_english_class_by_teacher(self):
+        self.client.login(username='teacher', password='teacherpass')
+        response = self.client.get(reverse('delete_english_class', kwargs={'pk': self.english_class.pk}))
+        self.assertEqual(response.status_code, 200)
+
     def test_lesson_details_access_by_teacher(self):
         # Assuming lesson_details view exists and has a url named 'lesson_details'
         lesson = Lesson.objects.create(english_class=self.english_class, title="Lesson 1", start_time=timezone.now(), end_time=timezone.now())
@@ -126,4 +131,4 @@ class ScheduleViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.english_class.title)
 
-    
+

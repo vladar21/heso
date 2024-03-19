@@ -13,7 +13,6 @@ urlpatterns = [
     path('classes/<int:pk>/delete/', views.delete_english_class, name='delete_english_class'),
     path('lesson_details/', views.lesson_details, name='lesson_details'),
 
-    # path('classes/<int:pk>/lessons/', views.lessons_list, name='lessons_list'),
     path('classes/<int:class_id>/lessons/', views.lessons_list, name='lessons_list'),
 
     path('classes/<int:class_id>/lessons/create/', views.create_lesson, name='create_lesson'),
