@@ -1,15 +1,33 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from .models import EnglishClass, Schedule, Lesson, Material
-
+from multiupload.fields import MultiFileField
 
 User = get_user_model()
 
 
 class EnglishClassForm(forms.ModelForm):
+    teacher = forms.ModelChoiceField(
+        queryset=User.objects.filter(is_teacher=True),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    students = forms.ModelMultipleChoiceField(
+        queryset=User.objects.filter(is_student=True),
+        required=False,
+        widget=forms.CheckboxSelectMultiple()
+    )
+
     class Meta:
         model = EnglishClass
-        fields = ['title', 'color', 'teacher', 'students']
+        fields = ['title', 'color', 'description', 'teacher', 'students']
+    
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(EnglishClassForm, self).__init__(*args, **kwargs)
+        
+        if user and not user.is_superuser:
+            self.fields['teacher'].disabled = True
 
 
 class ScheduleForm(forms.ModelForm):
@@ -38,10 +56,11 @@ class LessonForm(forms.ModelForm):
         required=False,
         widget=forms.CheckboxSelectMultiple()
     )
+    new_materials = MultiFileField(min_num=False, max_num=5, max_file_size=1024*1024*5)
 
     class Meta:
         model = Lesson
-        fields = ['title', 'description', 'start_time', 'end_time', 'location', 'meeting_link', 'teacher', 'students', 'materials']
+        fields = ['title', 'description', 'start_time', 'end_time', 'location', 'meeting_link', 'teacher', 'students', 'materials', 'new_materials']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
