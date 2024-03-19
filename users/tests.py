@@ -6,6 +6,7 @@ from django.core import mail
 
 from .forms import UserRegisterForm
 from .models import User
+from django.contrib.auth import get_user_model
 
 
 class UserRegisterFormTest(TestCase):
@@ -35,7 +36,7 @@ class UserRegistrationTest(TestCase):
             'password2': 'testpassword123',
         })
         self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(response.status_code, 302)  # Redirect to login page
+        self.assertEqual(response.status_code, 302)  # Redirect to schedule page
         self.assertEqual(len(mail.outbox), 1)  # Check if an email has been sent
     
     def test_duplicate_registration(self):
@@ -157,3 +158,22 @@ class LoginTest(TestCase):
         })
         self.assertEqual(response.status_code, 200)  # Check that the login page is rendered again
         self.assertContains(response, 'Invalid username or password. Please try again.')  # Check for error message
+
+
+class AuthenticatedRedirectTest(TestCase):
+    def setUp(self):
+        # Create a user and authenticate it
+        User = get_user_model()
+        self.user = User.objects.create_user(username='testuser', email='testuser@example.com', password='testpassword123')
+        self.client.force_login(self.user)
+
+    def test_registration_redirect(self):
+        """Test for redirecting authenticated users away from the registration page"""
+        response = self.client.get(reverse('register'))
+        self.assertRedirects(response, reverse('schedule'))
+
+    def test_login_redirect(self):
+        """Test for redirecting authenticated users away from the login page"""
+        response = self.client.get(reverse('login'), follow=True)
+        self.assertRedirects(response, reverse('schedule'), target_status_code=200)
+
