@@ -94,3 +94,27 @@ class ScheduleViewTests(TestCase):
         )
         response = self.client.get(reverse('delete_lesson', kwargs={'pk': lesson.pk}))
         self.assertEqual(response.status_code, 200)
+
+    def test_create_english_class_by_teacher(self):
+        self.client.login(username='teacher', password='teacherpass')
+
+        classes_count_before = EnglishClass.objects.count()
+
+        response = self.client.post(reverse('create_english_class'), data={
+            'title': 'Advanced English',
+            'description': 'This is an advanced English class for testing.',
+            'color': '#FFD700',
+            'teacher': self.teacher.id,
+            'term': 'Fall 2023',
+            'start_date': '2023-09-01',
+            'end_date': '2023-12-31',
+        })
+
+        self.assertEqual(response.status_code, 302, f"Expected Redirect to english_class_list, got {response.status_code} instead. Form errors: {response.context['form'].errors if response.context else 'N/A'}")
+
+        classes_count_after = EnglishClass.objects.count()
+        self.assertEqual(classes_count_after, classes_count_before + 1, "A new class should have been created.")
+
+        new_class = EnglishClass.objects.latest('id')
+        self.assertEqual(new_class.teacher.id, self.teacher.id)
+        self.assertEqual(new_class.title, 'Advanced English')
