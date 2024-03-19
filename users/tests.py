@@ -104,6 +104,25 @@ class UserRegistrationTest(TestCase):
         # Ensure that the user is redirected to the login page after logout
         self.assertEqual(response.status_code, 200)  # Check if the user is redirected successfully
         self.assertTemplateUsed(response, 'users/login.html')  # Ensure that the login page template is used
+    
+    def test_welcome_email_sent(self):
+        """Test to verify that the welcome email is sent after successful user registration"""
+        form_data = {'username': 'testuser', 'email': 'testuser@example.com', 'password1': 'dfgjndfgj34', 'password2': 'dfgjndfgj34'}
+        response = self.client.post(reverse('register'), data=form_data)
+        self.assertEqual(len(mail.outbox), 1)  # Check that one email was sent
+    
+    def test_email_content_and_recipients(self):
+        """Test to check the content and recipients of the sent email"""
+        form_data = {'username': 'testuser', 'email': 'testuser@example.com', 'password1': 'dfgjndfgj34', 'password2': 'dfgjndfgj34'}
+        response = self.client.post(reverse('register'), data=form_data)
+        self.assertEqual(len(mail.outbox), 1)  # Check that one email was sent
+
+        # Check email content
+        email = mail.outbox[0]
+        self.assertIn('Welcome to HESO!', email.subject)
+        self.assertIn('Hi testuser,', email.body)
+        self.assertEqual(email.from_email, 'noreply@heso.com')
+        self.assertEqual(email.recipients(), ['testuser@example.com'])
 
 
 class LoginTest(TestCase):
