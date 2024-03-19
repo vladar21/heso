@@ -1,9 +1,16 @@
-from django.contrib.auth import get_user_model
-from scheduling.models import EnglishClass, Lesson, Schedule, Material
+# Python standard libraries
+import datetime
+import random
+
+# Django utilities
 from django.utils import timezone
 from django.utils.timezone import make_aware
-import random
-import datetime
+
+# Django authentication
+from django.contrib.auth import get_user_model
+
+# Local Django app imports
+from scheduling.models import EnglishClass, Lesson, Schedule, Material
 
 
 def create_users():

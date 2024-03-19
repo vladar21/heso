@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import EnglishClass, Schedule, Lesson, Material
 from multiupload.fields import MultiFileField
+from .models import EnglishClass, Schedule, Lesson, Material
+
 
 User = get_user_model()
 

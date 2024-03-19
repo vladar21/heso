@@ -2,8 +2,9 @@
 
 from django.test import TestCase
 from django.urls import reverse
-from .forms import UserRegisterForm
 from django.core import mail
+
+from .forms import UserRegisterForm
 from .models import User
 
 

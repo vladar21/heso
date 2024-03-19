@@ -13,8 +13,7 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.db import transaction
-from django.contrib.auth.decorators import login_required, permission_required
-from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
 
