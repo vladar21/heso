@@ -88,6 +88,66 @@ In the development of HESO, user stories are used to capture specific functional
     2. Schedule updates are immediately visible to the student.
 
 
+## ERP diagram
+
+This database schema outlines the structure of a system designed to manage classes, lessons, and materials for an educational institution. It includes **User** to record both teachers and students, **EnglishClass** for details of each class including its teacher and students, **Lesson** for specific class sessions with attributes such as timing and status, and **Material** for educational content. Junction tables **EnglishClass_Students** and **Lesson_Materials** support many-to-many relationships, allowing for the flexible association of students with classes and materials with lessons.
+
+1. **HESO db diagram**:
+<img src="assets/images/HESO-diagramm.png" width="800" alt="HESO db diagramm">
+
+
+2. **Project structure**:
+    ```dbml
+
+      Table User {
+        id int [pk, increment] // primary key
+        username varchar
+        phone_number varchar [null]
+        is_teacher bool
+        is_student bool
+        enrollment_date date [null]
+      }
+
+      Table EnglishClass {
+        id int [pk, increment]
+        title varchar
+        description text
+        color varchar
+        teacher_id int [ref: > User.id] // foreign key
+      }
+
+      Table Lesson {
+        id int [pk, increment]
+        english_class_id int [ref: > EnglishClass.id]
+        title varchar
+        description text [null]
+        start_time datetime
+        end_time datetime
+        meeting_link varchar [null]
+        location varchar
+        status varchar
+      }
+
+      Table Material {
+        id int [pk, increment]
+        title varchar
+        type varchar
+        content binary [null]
+      }
+
+      // Relationships
+      Table EnglishClass_Students {
+        class_id int [ref: > EnglishClass.id]
+        student_id int [ref: > User.id]
+      }
+
+      Table Lesson_Materials {
+        lesson_id int [ref: > Lesson.id]
+        material_id int [ref: > Material.id]
+      }
+
+    ```
+
 ## System Features
 
 - **Class Schedule Management**: Teachers and students can view and interact with class schedules. Teachers can manage EnglishClass, Lessons and Materials.
