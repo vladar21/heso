@@ -154,6 +154,23 @@ class ScheduleViewTests(TestCase):
         lesson_to_delete = Lesson.objects.create(title="Test Lesson", english_class=english_class, start_time="2023-01-01T10:00:00Z", end_time="2023-01-01T12:00:00Z")
         response = self.client.post(reverse('delete_lesson', kwargs={'pk': lesson_to_delete.pk}))
         self.assertEqual(response.status_code, 302)
-        
+
         with self.assertRaises(Lesson.DoesNotExist):
             Lesson.objects.get(pk=lesson_to_delete.pk)
+    
+    def test_update_lesson_by_teacher(self):
+        self.client.login(username='teacher', password='teacherpass')
+        english_class = EnglishClass.objects.create(title="Test Class", teacher=self.teacher)
+        lesson_to_update = Lesson.objects.create(title="Old Title", english_class=english_class, start_time="2023-01-01T10:00:00Z", end_time="2023-01-01T12:00:00Z")
+        response = self.client.post(reverse('update_lesson_view', kwargs={'pk': lesson_to_update.pk}), data={
+            'title': 'Updated Title',
+            'description': 'Updated Description',
+            'start_time': '2023-01-01T10:00:00Z',
+            'end_time': '2023-01-01T12:00:00Z',
+            'location': 'on-site',
+        })
+        self.assertEqual(response.status_code, 302)
+        lesson_to_update.refresh_from_db()
+        self.assertEqual(lesson_to_update.title, 'Updated Title')
+        self.assertEqual(lesson_to_update.description, 'Updated Description')
+        self.assertEqual(lesson_to_update.location, 'on-site')

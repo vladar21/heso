@@ -421,6 +421,7 @@ def delete_lesson(request, pk):
 def update_lesson_view(request, pk):
     lesson = get_object_or_404(Lesson, pk=pk)
     is_teacher = request.user == lesson.english_class.teacher
+    is_student = not request.user.is_superuser and not is_teacher
 
     if not (request.user.is_superuser or is_teacher or request.user in lesson.english_class.students.all()):
         messages.error(request, "You do not have permission to update this lesson.")
@@ -465,7 +466,5 @@ def update_lesson_view(request, pk):
 
             if not request.user.is_superuser:
                 form.fields['teacher'].widget.attrs['disabled'] = 'disabled'
-            
-            is_student = not request.user.is_superuser and not is_teacher
             
     return render(request, 'scheduling/lesson_form.html', {'form': form, 'lesson': lesson, 'is_student': is_student})
