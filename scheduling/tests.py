@@ -131,4 +131,19 @@ class ScheduleViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.english_class.title)
 
-
+    def test_create_lesson_by_teacher(self):
+        self.client.login(username='teacher', password='teacherpass')
+        english_class = EnglishClass.objects.create(title="Test Class", teacher=self.teacher)
+        lessons_count_before = Lesson.objects.count()
+        response = self.client.post(reverse('create_lesson', kwargs={'class_id': english_class.pk}), data={
+            'title': 'Test Lesson',
+            'description': 'Test Description',
+            'start_time': '2023-01-01T10:00:00Z',
+            'end_time': '2023-01-01T12:00:00Z',
+            'location': 'on-site',
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Lesson.objects.count(), lessons_count_before + 1)
+        new_lesson = Lesson.objects.latest('id')
+        self.assertEqual(new_lesson.title, 'Test Lesson')
+        self.assertEqual(new_lesson.english_class, english_class)

@@ -368,6 +368,8 @@ def create_lesson(request, class_id):
                     messages.error(request, f'A material with the name "{file.name}" already exists.')
                 lesson.save()
             return redirect('update_lesson_view', pk=lesson.id)
+        else:
+            print(form.errors)
     else:
         form = LessonForm()
         # Auto-fill teacher field with current user if they are a teacher
