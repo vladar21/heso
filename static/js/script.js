@@ -30,17 +30,19 @@ document.addEventListener('DOMContentLoaded', function() {
     var isStudentCheckbox = document.getElementById('id_is_student');
     var isTeacherCheckbox = document.getElementById('id_is_teacher');
 
-    isStudentCheckbox.addEventListener('change', function() {
-        if (this.checked) {
-            isTeacherCheckbox.checked = false;
-        }
-    });
+    if (isStudentCheckbox && isTeacherCheckbox) {
+        isStudentCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                isTeacherCheckbox.checked = false;
+            }
+        });
 
-    isTeacherCheckbox.addEventListener('change', function() {
-        if (this.checked) {
-            isStudentCheckbox.checked = false;
-        }
-    });
+        isTeacherCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                isStudentCheckbox.checked = false;
+            }
+        });
+    }
 });
 
 
