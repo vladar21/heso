@@ -118,3 +118,12 @@ class ScheduleViewTests(TestCase):
         new_class = EnglishClass.objects.latest('id')
         self.assertEqual(new_class.teacher.id, self.teacher.id)
         self.assertEqual(new_class.title, 'Advanced English')
+
+    def test_view_english_class(self):
+        class_id = self.english_class.pk
+        self.client.login(username='teacher', password='teacherpass')
+        response = self.client.get(reverse('update_english_class', kwargs={'pk': class_id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.english_class.title)
+
+    
