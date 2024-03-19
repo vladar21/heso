@@ -10,14 +10,15 @@ HESO is a streamlined online service designed for managing class schedules in sm
 
 - [Overview](#overview)
 - [Usage](#usage)
-- [User Roles and Responsibilities](#user-roles-and-responsibilities)
 - [User Stories](#user-stories)
-- [Model Relationships](#model-relationships)
+- [ERP diagram](#erp-diagram)
 - [System Features](#system-features)
+- [Future Enhancements](#future-features)
 - [Technologies Used](#technologies-used)
 - [Agile Development Plan](#agile-development-plan)
 - [Setup and Installation](#setup-and-installation)
-- [Testing](#testing)
+- [Testing and validation](#testing)
+- [Work with bugs](#bugs)
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
@@ -56,7 +57,15 @@ HESO is tailored to facilitate the organization and management of class schedule
 7. **Student Rights**:
    - Students can only view the schedule of lessons and information about their assigned classes.
 
-8. **Summary**:
+8. The procedure of the **Assigning roles** in the system:
+    - SuperAdmin is assigned programmatically, using:
+      ```bash
+      python manage.py creatsuperuser
+      ```
+    - Any new user who registers on the site gets the role of Student by default.
+    - SuperAdmin, through the admin panel (/admin), can make any Student a Teacher, or vice versa.
+
+9. **Summary**:
     - SuperAdmin can CRUD all Classes, Lessons, Materials, and has access to admin panel for users managment.
     - Teachers can CRUD for Classes and Lessons for Classes they teach.
     - Students can only view Classes and Lessons for Classes they are enrolled in.
