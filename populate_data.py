@@ -63,7 +63,7 @@ last_start_date = None
 existing_materials_titles = []
 
 
-def generate_schedule_dates(year=2024, month=3, last_date=None):
+def generate_schedule_dates(year=2024, month=4, last_date=None):
     """
     Generate start and end dates for schedules with staggered start dates.
 
