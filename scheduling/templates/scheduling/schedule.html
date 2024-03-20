@@ -111,7 +111,6 @@
                 return response.json();
             })
             .then(response => {
-                console.log('Response data ', response)
                 if (response.status === 'success') {
                     populateAndShowModal(response.lesson);
                 } else {
@@ -119,7 +118,6 @@
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
                 showMessage('error', error.message);
             });
 
@@ -294,7 +292,6 @@
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            console.log('Lesson updated successfully');
             var event = calendar.getEventById(lessonId);
             if(event) {
                 event.setProp('title', data.lesson.title);
