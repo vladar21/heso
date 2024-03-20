@@ -349,27 +349,32 @@ Configure the connection to the PostgreSQL database in the `settings.py` file of
 
 See the W3C Markup validation **Results** in the image below:
 
-![W3C Markup validation results:](/assets/images/w3c_markup_validator_result.jpg)
+<img src="assets/images/w3c_markup_validator_result.jpg" width="600" alt="W3C Markup validation results">
 
 -   [W3C CSS Validator](https://jigsaw.w3.org/css-validator/#validate_by_input) - [results link](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fheso-cba8b8a64704.herokuapp.com%2Fschedule%2F&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
 
 See the W3C CSS validation **Results** in the image below:
 
-![W3C CSS validation results:](/assets/images/w3c_css_validation_result.jpg)
-
+<img src="assets/images/w3c_css_validation_result.jpg" width="600" alt="W3C CSS validation results">
 
 -   [JSHint JavaScript Validator](https://jshint.com/)
 
 See the JSHint validation **Results** in the image below:
 
-![JSHint validation results:](/assets/images/JSHint_validation_result.jpg)
+<img src="assets/images/JSHint_validation_result.jpg" width="600" alt="JSHint validation results">
 
 
 #### Accessibility
 
 1. I confirmed that the colors and fonts chosen are easy to read and accessible by running it through lighthouse in devtools.
 
-![Lighthouse Chrome devtool test results](/assets/images/readme/LighthouseEstemation.jpg)
+- Lighthouse Chrome devtool test results:
+
+<img src="assets/images/Lighthouse_Test_Result.jpg" width="600" alt="Lighthouse Chrome devtool test results">
+
+- The main problem with performance and SEO - it is CDN factor.
+
+<img src="assets/images/Lighthouse_Treemap.jpg" width="600" alt="The source of the not the higher estimates in the lighthouse test">
 
 2. I tested that this page works in different browsers: Chrome, Firefox, Mircrosoft Edge.
 
