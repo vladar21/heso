@@ -341,6 +341,42 @@ Configure the connection to the PostgreSQL database in the `settings.py` file of
 - `Lesson Details Accessibility`: Confirms that lesson details are accessible to users with the appropriate permissions, including teachers and enrolled students.
 - `Scheduling Views`: Validates that the scheduling views render correctly for different user roles, providing the necessary information as expected.
 
+#### The W3C Markup Validator, and W3C CSS Validator, and JSHint Javascript Validator Services
+
+- All of these services were used to validate pages of the project to ensure there were no syntax errors in the project.
+
+-   [W3C Markup Validator](https://validator.w3.org/nu/) - [results link](https://validator.w3.org/nu/?doc=https%3A%2F%2Fheso-cba8b8a64704.herokuapp.com%2Fschedule%2F)
+
+See the W3C Markup validation **Results** in the image below:
+
+![W3C Markup validation results:](/assets/images/w3c_markup_validator_result.jpg)
+
+-   [W3C CSS Validator](https://jigsaw.w3.org/css-validator/#validate_by_input) - [results link](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fheso-cba8b8a64704.herokuapp.com%2Fschedule%2F&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
+
+See the W3C CSS validation **Results** in the image below:
+
+![W3C CSS validation results:](/assets/images/w3c_css_validation_result.jpg)
+
+
+-   [JSHint JavaScript Validator](https://jshint.com/)
+
+See the JSHint validation **Results** in the image below:
+
+![JSHint validation results:](/assets/images/JSHint_validation_result.jpg)
+
+
+#### Accessibility
+
+1. I confirmed that the colors and fonts chosen are easy to read and accessible by running it through lighthouse in devtools.
+
+![Lighthouse Chrome devtool test results](/assets/images/readme/LighthouseEstemation.jpg)
+
+2. I tested that this page works in different browsers: Chrome, Firefox, Mircrosoft Edge.
+
+3. I confirmed that this project is responsive, looks good and functions on all standard screen sizes using the devtools device toolbar.
+
+4. I have confirmed that the form works: requires entries in every field, will only accept an email in the email field, and the submit button works.
+
 
 ## Bugs
 
