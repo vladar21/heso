@@ -166,6 +166,8 @@ This database schema outlines the structure of a system designed to manage class
 
 - **Class Schedule Management**: Teachers and students can view and interact with class schedules. Teachers can manage EnglishClass, Lessons and Materials.
 - **Admin Control**: System administrators can manage schedule and user accounts and configure system settings.
+- **Changing Lesson Dates Drag-and-Drop**: The SuperAdmin for all lessons and teachers for lessons where they are teacher in ``/schedule`` for month, week or day can change lesson dates using drag and drop only:
+<img src="assets/images/DragAndDropFeatures.gif" width="600" alt="Change lesson dates using drag and drop only">
 
 
 ## Future Enhancements
