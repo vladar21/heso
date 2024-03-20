@@ -90,12 +90,13 @@ In the development of HESO, user stories are used to capture specific functional
 - **Story**: As a **Teacher**, I can **access and update the class schedule** so that **I can efficiently manage class timings and inform students of any changes**.
   - **Acceptance Criteria**:
     1. Teacher can CRUD their class schedules.
-    2. Any changes made are automatically updated and visible to students.
+    2. Teachers can CRUD educational materials for lessons in the class they are teaching.
+    3. Any changes made are automatically updated and visible to students.
 
 ### User Story for Student
 - **Story**: As a **Student**, I can **view my class schedule** so that **I can keep track of class timings and any updates to the schedule**.
   - **Acceptance Criteria**:
-    1. Student can access classes schedule.
+    1. Student can view classes and lessons schedule where he is enrolled.
     2. Schedule updates are immediately visible to the student.
 
 [Back to Table of Contents](#table-of-contents)
