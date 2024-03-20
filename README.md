@@ -13,12 +13,13 @@ HESO is a streamlined online service designed for managing class schedules in sm
 - [User Stories](#user-stories)
 - [ERP diagram](#erp-diagram)
 - [System Features](#system-features)
-- [Future Enhancements](#future-features)
+- [Future Enhancements](#future-enhancements)
 - [Technologies Used](#technologies-used)
 - [Agile Development Plan](#agile-development-plan)
 - [Setup and Installation](#setup-and-installation)
-- [Testing and validation](#testing)
-- [Work with bugs](#bugs)
+- [Testing and validation](#testing-and-validation)
+- [Bugs](#bugs)
+- [Deployment](#deployment)
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
@@ -71,6 +72,7 @@ HESO is tailored to facilitate the organization and management of class schedule
     - Students can only view Classes and Lessons for Classes they are enrolled in.
     - If the user does not have any of these roles, they are not allowed to view the Classes list and Lesson's details.
 
+[Back to Table of Contents](#table-of-contents)
 
 ## User Stories
 
@@ -96,6 +98,7 @@ In the development of HESO, user stories are used to capture specific functional
     1. Student can access classes schedule.
     2. Schedule updates are immediately visible to the student.
 
+[Back to Table of Contents](#table-of-contents)
 
 ## ERP diagram
 
@@ -157,6 +160,8 @@ This database schema outlines the structure of a system designed to manage class
 
     ```
 
+[Back to Table of Contents](#table-of-contents)
+
 ## System Features
 
 - **Class Schedule Management**: Teachers and students can view and interact with class schedules. Teachers can manage EnglishClass, Lessons and Materials.
@@ -172,15 +177,20 @@ This database schema outlines the structure of a system designed to manage class
   **Real-time Updates**: Teachers and students receive real-time updates and notifications through Google Calendar.
 
 ## Technologies Used
+
 - **Backend**: Django 4.2.9
 - **Frontend**: Bootstrap 4.6.2, jQuery 3.5.1, FullCalendar 6.1.10
 - **Database**: PostgreSQL 13.9
 - **Version Control**: Git, GitHub
 - **Deployment**: Heroku
 
+[Back to Table of Contents](#table-of-contents)
+
 ## Agile Development Plan
 
-The development of HESO is structured into sprints, with each sprint targeting specific tasks for a focused and incremental development approach. Below is the sprint schedule along with their respective tasks:
+The development of HESO is structured into sprints, with each sprint targeting specific tasks for a focused and incremental development approach. Below is the sprint schedule along with their respective tasks.
+
+``Current version of Agile plane`` by [link](https://github.com/users/vladar21/projects/7)
 
 ### Sprint Schedule
 
@@ -229,6 +239,8 @@ The development of HESO is structured into sprints, with each sprint targeting s
 - Task 24: Prepare for final release including updating documentation and enhancing user experience.
 
 Each sprint in this schedule is a focused development cycle that addresses specific components of the project, facilitating clear progression towards the project goals.
+
+[Back to Table of Contents](#table-of-contents)
 
 ## Setup and Installation
 
@@ -305,6 +317,7 @@ Configure the connection to the PostgreSQL database in the `settings.py` file of
 
 2. Follow the prompts to create a superuser, including providing a username, email address, and password.
 
+[Back to Table of Contents](#table-of-contents)
 
 ## Testing and validation
 
@@ -382,6 +395,7 @@ See the JSHint validation **Results** in the image below:
 
 4. I have confirmed that the form works: requires entries in every field, will only accept an email in the email field, and the submit button works.
 
+[Back to Table of Contents](#table-of-contents)
 
 ## Bugs
 
@@ -437,10 +451,119 @@ See the JSHint validation **Results** in the image below:
 
  <img src="assets/images/fix_result_wron_message_for_unautorized_access.jpg" width="600" alt="correct message when unautorized user click on website items">
 
+[Back to Table of Contents](#table-of-contents)
+
+## Deployment
+
+### Version Control
+
+The development process utilizes Git for version control, with regular commits and descriptive messages to track changes and facilitate collaboration.
+
+### Heroku Deployment
+
+Heroku is a cloud platform that allows developers to build, run, and operate applications entirely in the cloud. Follow the instructions below to deploy your HESO: Home English School Online – Online Class Schedule Service on Heroku:
+
+Prerequisites
+- A Heroku account – Sign up here if you don't have one.
+- The Heroku CLI – Download and install it from here.
+- Git installed on your machine.
+
+Steps for Deployment
+1. Login to Heroku: After installing the Heroku CLI, open your terminal and log in to your Heroku account:
+
+```bash
+heroku login
+```
+Your web browser will open for you to log in to your Heroku account.
+
+2. Create a Heroku App: Create a new app on Heroku:
+
+```bash
+heroku create your-app-name
+```
+Replace your-app-name with a unique name for your application. Heroku will provide you with a web URL and a git URL for deployment.
+
+3. Prepare Your Application: Make sure your application is configured correctly for deployment on Heroku.
+
+4. Commit to Git: If you’ve made any changes, commit them to your git repository:
+
+```bash
+git add .
+git commit -m "Added files for Heroku deployment"
+```
+
+5. Deploy to Heroku: Deploy your code to Heroku:
+
+```bash
+git push heroku main
+```
+Heroku will now receive your code and start building your app using the necessary buildpacks.
+
+6. Ensure at Least One Instance of the App is Running:
+
+```bash
+heroku ps:scale web=1 --app your-app-name
+```
+This command tells Heroku to run a single instance of your web app.
+
+7. Open Your Application: You can now open your app in the browser:
+
+```bash
+heroku open --app your-app-name
+```
+Alternatively, you can visit the URL provided by Heroku in step 2.
+
+### Clone the Repository Code Locally
+To clone the repository and run HESO: Home English School Online – Online Class Schedule Service locally on your machine, follow these steps:
+
+**Prerequisites**
+
+Before you begin, make sure you have the following installed:
+- Git
+- A text editor or an IDE (like Visual Studio Code, PyCharm, etc.)
+
+Cloning the Repository:
+1. ``Open Terminal``: Open your terminal, command prompt, or Git bash in the directory where you wish to clone the repository.
+
+2. ``Clone the Repository``: Use the following Git command to clone the repository:
+
+```bash
+git clone https://github.com/vladar21/heso.git
+```
+Replace https://github.com/vladar21/heso.git with the actual repository URL.
+
+3. ``Navigate to the Repository Directory``: Once the repository has been cloned, navigate to the cloned repository directory:
+
+```bash
+cd heso
+```
+
+4. ``Setup Environment``:
+
+- Set up the necessary environment variables.
+- Configure the database settings if required.
+
+5. ``Run the Application``: You can now run the application locally:
+
+```bash
+python manage.py runserver
+```
+This command will start a development server, and you can access the application in your web browser at http://127.0.0.1:8000/.
+
+[Back to Table of Contents](#table-of-contents)
 
 ## Contributing
 
-- Information for developers interested in contributing to the HESO project.
+If you want to contribute to the project's development, please adhere to the following guidelines:
+
+1. Fork the repository.
+2. Clone your forked version of the repository.
+3. Create a new branch for your feature or fix.
+4. Make your changes and commit them with descriptive commit messages.
+5. Push the changes to your fork.
+6. Open a pull request to the original repository.
+
+Please ensure you adhere to the contribution guidelines provided by the repository owner.
 
 ## License
 
@@ -455,3 +578,5 @@ See the JSHint validation **Results** in the image below:
 - My Cohort Facilitator - Marko Tot - for the timely and great advice.
 
 - Tutor support at Code Institute for their support.
+
+[Back to Table of Contents](#table-of-contents)
