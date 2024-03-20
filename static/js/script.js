@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var message = messages[i];
             var type = message.getAttribute('data-type'); // 'success', 'error' и т.д.
             var text = message.getAttribute('data-message');
-            showMessage(type, text); // Используйте вашу функцию для отображения сообщения
+            showMessage(type, text);
         }
     }
 });
