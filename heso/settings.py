@@ -5,8 +5,8 @@ import os
 import dj_database_url
 
 # Importing environment variables if the env.py file exists
-# if os.path.isfile("env.py"):
-#     import env
+if os.path.isfile("env.py"):
+    import env  # noqa:
 
 
 # BASE_DIR represents the directory that contains the manage.py script
