@@ -20,8 +20,28 @@ document.addEventListener('DOMContentLoaded', function() {
             var message = messages[i];
             var type = message.getAttribute('data-type'); // 'success', 'error' и т.д.
             var text = message.getAttribute('data-message');
-            showMessage(type, text); // Используйте вашу функцию для отображения сообщения
+            showMessage(type, text);
         }
+    }
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    var isStudentCheckbox = document.getElementById('id_is_student');
+    var isTeacherCheckbox = document.getElementById('id_is_teacher');
+
+    if (isStudentCheckbox && isTeacherCheckbox) {
+        isStudentCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                isTeacherCheckbox.checked = false;
+            }
+        });
+
+        isTeacherCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                isStudentCheckbox.checked = false;
+            }
+        });
     }
 });
 
