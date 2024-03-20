@@ -180,7 +180,7 @@ This database schema outlines the structure of a system designed to manage class
 
 ## Technologies Used
 
-- **Backend**: Django 4.2.9
+- **Backend**: Python 3.12.*, Django 4.2.9
 - **Frontend**: Bootstrap 4.6.2, jQuery 3.5.1, FullCalendar 6.1.10
 - **Database**: PostgreSQL 13.9
 - **Version Control**: Git, GitHub
@@ -244,22 +244,47 @@ Each sprint in this schedule is a focused development cycle that addresses speci
 
 [Back to Table of Contents](#table-of-contents)
 
-## Setup and Installation
+## Clone, Setup and Installation
 
-### Step 1: Install Project Dependencies
+### Step 1: Clone the Repository Code Locally
+To clone the repository and run HESO: Home English School Online – Online Class Schedule Service locally on your machine, follow these steps:
 
-1. Ensure you have Python 3.x installed.
+**Prerequisites**
+
+Before you begin, make sure you have the following installed:
+- Git
+- A text editor or an IDE (like Visual Studio Code, PyCharm, etc.)
+
+Cloning the Repository:
+1. ``Open Terminal``: Open your terminal, command prompt, or Git bash in the directory where you wish to clone the repository.
+
+2. ``Clone the Repository``: Use the following Git command to clone the repository:
+
+```bash
+git clone https://github.com/vladar21/heso.git
+```
+Replace https://github.com/vladar21/heso.git with the actual repository URL.
+
+3. ``Navigate to the Repository Directory``: Once the repository has been cloned, navigate to the cloned repository directory:
+
+```bash
+cd heso
+```
+
+### Step 2: Install Project Dependencies
+
+1. Ensure you have Python 3.12.x installed.
 2. Install the required dependencies from the `requirements.txt` file by executing the following command in the project's root directory:
 
     ```bash
     pip install -r requirements.txt
     ```
 
-### Step 2: Configure the Database
+### Step 3: Configure the Database
 
 Configure the connection to the PostgreSQL database in the `settings.py` file of your Django project.
 
-### Step 3: Apply Migrations
+### Step 4: Apply Migrations
 
 * Apply migrations to create the database tables by running the following command:
 
@@ -267,7 +292,7 @@ Configure the connection to the PostgreSQL database in the `settings.py` file of
     python manage.py migrate
     ```
 
-### Step 4: Run the Server
+### Step 5: Run the Server
 
 * Start the Django development server by running the following command:
 
@@ -275,7 +300,7 @@ Configure the connection to the PostgreSQL database in the `settings.py` file of
     python manage.py runserver
     ```
 
-### Step 5: Populate Data
+### Step 6: Populate Data
 
 1. To populate the database with dummy data, execute the `populate_data.py` script using the `python manage.py shell` command:
 
@@ -299,7 +324,7 @@ Configure the connection to the PostgreSQL database in the `settings.py` file of
      password123
     ```
 
-### Step 6: Clean Database (Optional)
+### Step 7: Clean Database (Optional)
 
 1. You can clean the database at any time using the following command:
 
@@ -307,9 +332,9 @@ Configure the connection to the PostgreSQL database in the `settings.py` file of
     python manage.py flush
     ```
 
-2. After cleaning the database, follow steps 1-2 to set up the database again.
+2. After cleaning the database, follow steps 2-3 to set up the database again.
 
-### Step 7: Start with an Empty Database (Optional)
+### Step 8: Start with an Empty Database (Optional)
 
 1. If you prefer not to use the `populate_data.py` script and start with an empty database, you can create a Superuser by running the command:
 
@@ -514,43 +539,6 @@ This command tells Heroku to run a single instance of your web app.
 heroku open --app your-app-name
 ```
 Alternatively, you can visit the URL provided by Heroku in step 2.
-
-### Clone the Repository Code Locally
-To clone the repository and run HESO: Home English School Online – Online Class Schedule Service locally on your machine, follow these steps:
-
-**Prerequisites**
-
-Before you begin, make sure you have the following installed:
-- Git
-- A text editor or an IDE (like Visual Studio Code, PyCharm, etc.)
-
-Cloning the Repository:
-1. ``Open Terminal``: Open your terminal, command prompt, or Git bash in the directory where you wish to clone the repository.
-
-2. ``Clone the Repository``: Use the following Git command to clone the repository:
-
-```bash
-git clone https://github.com/vladar21/heso.git
-```
-Replace https://github.com/vladar21/heso.git with the actual repository URL.
-
-3. ``Navigate to the Repository Directory``: Once the repository has been cloned, navigate to the cloned repository directory:
-
-```bash
-cd heso
-```
-
-4. ``Setup Environment``:
-
-- Set up the necessary environment variables.
-- Configure the database settings if required.
-
-5. ``Run the Application``: You can now run the application locally:
-
-```bash
-python manage.py runserver
-```
-This command will start a development server, and you can access the application in your web browser at http://127.0.0.1:8000/.
 
 [Back to Table of Contents](#table-of-contents)
 
