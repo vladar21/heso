@@ -24,12 +24,12 @@
         events: JSON.parse('{{ lessons_list|safe }}'),
         eventContent: function(arg) {
             var class_topic = arg.event.extendedProps.class_topic;
-            
+            var meeting_link = '';
             var location = arg.event.extendedProps.location;
             if (location == 'online'){
-                var meeting_link = `<div><i class="fas fa-video"></i> Meeting link: <b><a href="${arg.event.extendedProps.meeting_link}" target="_blank" style="color: lightblue;">Join</a></b></div>`
+                meeting_link = `<div><i class="fas fa-video"></i> Meeting link: <b><a href="${arg.event.extendedProps.meeting_link}" target="_blank" style="color: lightblue;">Join</a></b></div>`
             }else{
-                var meeting_link = `<div><i class="fas fa-video"></i> Location: <b>Onsite<b></div>`
+                meeting_link = `<div><i class="fas fa-video"></i> Location: <b>Onsite<b></div>`
             }
 
             // Example HTML structure with FontAwesome icons
