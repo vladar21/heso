@@ -31,30 +31,27 @@ ALLOWED_HOSTS = ["127.0.0.1", ".herokuapp.com"]
 # INSTALLED_APPS list all Django applications that are activated within this Django instance.
 # These apps are used to build the website.
 INSTALLED_APPS = [
-    # Default Django apps for the admin interface, authentication, sessions, messages,
-    # and static files.
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    # Custom apps for user management and scheduling functionality.
-    "users",
-    "scheduling",
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'users',
+    'scheduling',
 ]
 
 # MIDDLEWARE is a framework of hooks into Django's request/response processing.
 # It's a lightweight, low-level plugin system for globally altering Django’s input or output.
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 # ROOT_URLCONF points to the Python module that contains the urlpatterns.

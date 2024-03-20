@@ -1,3 +1,4 @@
+- .flake8
 - .github
   - ISSUE_TEMPLATE
     - user-story-template.md
@@ -6,10 +7,18 @@
   - images
     - classes_diagram.jpg
     - doubling_while_saving_new_material.jpg
+    - DragAndDropFeatures.gif
     - fix_code_wron_message_for_unautorized_access.jpg
     - fix_not_highlighting_current_menu_item.jpg
     - fix_result_wron_message_for_unautorized_access.jpg
+    - Flake8_Validation_Result.jpg
+    - HESO-diagramm.png
+    - JSHint_validation_result.jpg
+    - Lighthouse_Test_Result.jpg
+    - Lighthouse_Treemap.jpg
     - not_highlighting_current_menu_item.jpg
+    - w3c_css_validation_result.jpg
+    - w3c_markup_validator_result.jpg
     - wron_message_for_unautorized_access.jpg
 - env.py
 - heso
@@ -29,8 +38,6 @@
     - urls.cpython-312.pyc
     - wsgi.cpython-312.pyc
     - __init__.cpython-312.pyc
-- HESO-diagramm.png
-- heso.plantuml
 - manage.py
 - populate_data.py
 - Procfile
@@ -93,6 +100,14 @@
     - style.css
   - images
     - default.jpg
+    - favicon
+      - android-chrome-192x192.png
+      - android-chrome-512x512.png
+      - apple-touch-icon.png
+      - favicon-16x16.png
+      - favicon-32x32.png
+      - favicon.ico
+      - site.webmanifest
     - nobody.jpg
   - js
     - script.js
@@ -239,6 +254,14 @@
     - style.css
   - images
     - default.jpg
+    - favicon
+      - android-chrome-192x192.png
+      - android-chrome-512x512.png
+      - apple-touch-icon.png
+      - favicon-16x16.png
+      - favicon-32x32.png
+      - favicon.ico
+      - site.webmanifest
     - nobody.jpg
   - js
     - script.js

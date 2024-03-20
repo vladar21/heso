@@ -382,6 +382,18 @@ Configure the connection to the PostgreSQL database in the `settings.py` file of
 - `Lesson Details Accessibility`: Confirms that lesson details are accessible to users with the appropriate permissions, including teachers and enrolled students.
 - `Scheduling Views`: Validates that the scheduling views render correctly for different user roles, providing the necessary information as expected.
 
+#### Running Unit Tests
+
+To run the unit tests in the project, execute the following commands:
+
+```bash
+python manage.py test --settings=heso.settings_test
+```
+
+Our example of Successful Test Execution
+<img src="assets/images/ResultsUnitTests.jpg" width="600" alt="Unit Tests Results">
+
+
 #### The W3C Markup Validator, and W3C CSS Validator, and JSHint Javascript Validator Services
 
 - All of these services were used to validate pages of the project to ensure there were no syntax errors in the project.

@@ -25,6 +25,7 @@ class User(AbstractUser):
     enrollment_date = models.DateField(null=True, blank=True)
 
     class Meta:
+        app_label = 'users'
         verbose_name = "General User"
 
     def __str__(self):

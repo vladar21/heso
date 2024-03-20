@@ -73,6 +73,7 @@ class EnglishClass(models.Model):
     )
 
     class Meta:
+        app_label = 'scheduling'
         verbose_name = "English Class"
         verbose_name_plural = "English Classes"
 
