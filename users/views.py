@@ -29,8 +29,10 @@ def register(request):
     """
     if request.user.is_authenticated:
         return redirect("schedule")
+
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
+
         if form.is_valid():
             user = form.save(commit=False)
             user.is_student = True
@@ -50,6 +52,10 @@ def register(request):
 
             messages.success(request, f"Account created for {username}!")
             return redirect("login")
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
     else:
         form = UserRegisterForm()
     return render(request, "users/register.html", {"form": form})
