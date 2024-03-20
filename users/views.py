@@ -7,7 +7,6 @@ from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 
@@ -50,7 +49,7 @@ def register(request):
             send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
             messages.success(request, f"Account created for {username}!")
-            return redirect("schedule")
+            return redirect("login")
     else:
         form = UserRegisterForm()
     return render(request, "users/register.html", {"form": form})
